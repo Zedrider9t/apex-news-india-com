@@ -1,0 +1,784 @@
+{
+  "id": "int",
+  "date": "str",
+  "date_gmt": "str",
+  "guid": {
+    "rendered": "str"
+  },
+  "modified": "str",
+  "modified_gmt": "str",
+  "slug": "str",
+  "status": "str",
+  "type": "str",
+  "link": "str",
+  "title": {
+    "rendered": "str"
+  },
+  "content": {
+    "rendered": "str",
+    "protected": "bool"
+  },
+  "excerpt": {
+    "rendered": "str",
+    "protected": "bool"
+  },
+  "author": "int",
+  "featured_media": "int",
+  "comment_status": "str",
+  "ping_status": "str",
+  "sticky": "bool",
+  "template": "str",
+  "format": "str",
+  "meta": {
+    "om_disable_all_campaigns": "bool",
+    "_monsterinsights_skip_tracking": "bool",
+    "_uf_show_specific_survey": "int",
+    "_uf_disable_surveys": "bool",
+    "footnotes": "str"
+  },
+  "categories": [
+    "int"
+  ],
+  "tags": [],
+  "class_list": [
+    "str"
+  ],
+  "aioseo_notices": [],
+  "aioseo_head": "str",
+  "aioseo_head_json": {
+    "title": "str",
+    "description": "str",
+    "canonical_url": "str",
+    "robots": "str",
+    "keywords": "str",
+    "webmasterTools": {
+      "msvalidate.01": "str",
+      "miscellaneous": "str"
+    },
+    "schema": {
+      "@context": "str",
+      "@graph": [
+        {
+          "@type": "str",
+          "@id": "str",
+          "name": "str",
+          "headline": "str",
+          "author": {
+            "@id": "str"
+          },
+          "publisher": {
+            "@id": "str"
+          },
+          "image": {
+            "@type": "str",
+            "url": "str",
+            "width": "int",
+            "height": "int",
+            "caption": "str"
+          },
+          "datePublished": "str",
+          "dateModified": "str",
+          "inLanguage": "str",
+          "mainEntityOfPage": {
+            "@id": "str"
+          },
+          "isPartOf": {
+            "@id": "str"
+          },
+          "articleSection": "str"
+        }
+      ]
+    },
+    "og:locale": "str",
+    "og:site_name": "str",
+    "og:type": "str",
+    "og:title": "str",
+    "og:description": "str",
+    "og:url": "str",
+    "og:image": "str",
+    "og:image:secure_url": "str",
+    "og:image:width": "int",
+    "og:image:height": "int",
+    "article:published_time": "str",
+    "article:modified_time": "str",
+    "article:publisher": "str",
+    "twitter:card": "str",
+    "twitter:site": "str",
+    "twitter:title": "str",
+    "twitter:description": "str",
+    "twitter:creator": "str",
+    "twitter:image": "str"
+  },
+  "aioseo_meta_data": {
+    "post_id": "str",
+    "title": "null",
+    "description": "null",
+    "keywords": "null",
+    "keyphrases": {
+      "focus": {
+        "keyphrase": "str",
+        "score": "int",
+        "analysis": {
+          "keyphraseInTitle": {
+            "score": "int",
+            "maxScore": "int",
+            "error": "int"
+          }
+        }
+      },
+      "additional": []
+    },
+    "focus_keyword": "null",
+    "truseo": "null",
+    "additional_keywords": "null",
+    "truseo_locale": "null",
+    "primary_term": "null",
+    "canonical_url": "null",
+    "og_title": "null",
+    "og_description": "null",
+    "og_object_type": "str",
+    "og_image_type": "str",
+    "og_image_custom_url": "null",
+    "og_image_custom_fields": "null",
+    "og_image_url": "null",
+    "og_image_width": "null",
+    "og_image_height": "null",
+    "og_video": "str",
+    "og_custom_url": "null",
+    "og_article_section": "null",
+    "og_article_tags": "null",
+    "twitter_use_og": "bool",
+    "twitter_card": "str",
+    "twitter_image_type": "str",
+    "twitter_image_custom_url": "null",
+    "twitter_image_custom_fields": "null",
+    "twitter_image_url": "null",
+    "twitter_title": "null",
+    "twitter_description": "null",
+    "schema_type": "str",
+    "schema_type_options": "null",
+    "schema": {
+      "blockGraphs": [],
+      "customGraphs": [],
+      "default": {
+        "data": {
+          "Article": [],
+          "Course": [],
+          "Dataset": [],
+          "FAQPage": [],
+          "Movie": [],
+          "Person": [],
+          "Product": [],
+          "ProductReview": [],
+          "Car": [],
+          "Recipe": [],
+          "Service": [],
+          "SoftwareApplication": [],
+          "WebPage": []
+        },
+        "graphName": "str",
+        "isEnabled": "bool"
+      },
+      "graphs": []
+    },
+    "pillar_content": "bool",
+    "robots_default": "bool",
+    "robots_noindex": "bool",
+    "robots_noarchive": "bool",
+    "robots_nosnippet": "bool",
+    "robots_nofollow": "bool",
+    "robots_noimageindex": "bool",
+    "robots_noodp": "bool",
+    "robots_notranslate": "bool",
+    "robots_max_snippet": "str",
+    "robots_max_videopreview": "str",
+    "robots_max_imagepreview": "str",
+    "priority": "null",
+    "frequency": "str",
+    "local_seo": "null",
+    "limit_modified_date": "bool",
+    "ai": {
+      "faqs": [],
+      "keyPoints": [],
+      "schemas": [],
+      "titles": [],
+      "descriptions": [],
+      "socialPosts": {
+        "email": {
+          "subject": "str",
+          "preview": "str",
+          "content": "str"
+        },
+        "linkedin": [],
+        "twitter": [],
+        "facebook": [],
+        "instagram": []
+      }
+    },
+    "breadcrumb_settings": "null",
+    "seo_analyzer_scan_date": "str",
+    "created": "str",
+    "updated": "str"
+  },
+  "aioseo_breadcrumb": "str",
+  "aioseo_breadcrumb_json": [
+    {
+      "label": "str",
+      "link": "str"
+    }
+  ],
+  "amp_enabled": "bool",
+  "_links": {
+    "self": [
+      {
+        "href": "str",
+        "targetHints": {
+          "allow": [
+            "str"
+          ]
+        }
+      }
+    ],
+    "collection": [
+      {
+        "href": "str"
+      }
+    ],
+    "about": [
+      {
+        "href": "str"
+      }
+    ],
+    "author": [
+      {
+        "embeddable": "bool",
+        "href": "str"
+      }
+    ],
+    "replies": [
+      {
+        "embeddable": "bool",
+        "href": "str"
+      }
+    ],
+    "version-history": [
+      {
+        "count": "int",
+        "href": "str"
+      }
+    ],
+    "predecessor-version": [
+      {
+        "id": "int",
+        "href": "str"
+      }
+    ],
+    "wp:featuredmedia": [
+      {
+        "embeddable": "bool",
+        "href": "str"
+      }
+    ],
+    "wp:attachment": [
+      {
+        "href": "str"
+      }
+    ],
+    "wp:term": [
+      {
+        "taxonomy": "str",
+        "embeddable": "bool",
+        "href": "str"
+      }
+    ],
+    "curies": [
+      {
+        "name": "str",
+        "href": "str",
+        "templated": "bool"
+      }
+    ]
+  },
+  "_embedded": {
+    "author": [
+      {
+        "code": "str",
+        "message": "str",
+        "data": {
+          "status": "int"
+        }
+      }
+    ],
+    "wp:featuredmedia": [
+      {
+        "id": "int",
+        "date": "str",
+        "slug": "str",
+        "type": "str",
+        "link": "str",
+        "title": {
+          "rendered": "str"
+        },
+        "author": "int",
+        "featured_media": "int",
+        "aioseo_notices": [],
+        "aioseo_head": "str",
+        "aioseo_head_json": {
+          "title": "str",
+          "description": "str",
+          "canonical_url": "str",
+          "robots": "str",
+          "keywords": "str",
+          "webmasterTools": {
+            "msvalidate.01": "str",
+            "miscellaneous": "str"
+          },
+          "schema": {
+            "@context": "str",
+            "@graph": [
+              {
+                "@type": "str",
+                "@id": "str",
+                "itemListElement": [
+                  {
+                    "@type": "str",
+                    "@id": "str",
+                    "position": "int",
+                    "name": "str",
+                    "item": "str",
+                    "nextItem": {
+                      "@type": "str",
+                      "@id": "str",
+                      "name": "str"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "og:locale": "str",
+          "og:site_name": "str",
+          "og:type": "str",
+          "og:title": "str",
+          "og:description": "str",
+          "og:url": "str",
+          "og:image": "str",
+          "og:image:secure_url": "str",
+          "og:image:width": "int",
+          "og:image:height": "int",
+          "article:published_time": "str",
+          "article:modified_time": "str",
+          "article:publisher": "str",
+          "twitter:card": "str",
+          "twitter:site": "str",
+          "twitter:title": "str",
+          "twitter:description": "str",
+          "twitter:creator": "str",
+          "twitter:image": "str"
+        },
+        "aioseo_meta_data": [],
+        "aioseo_breadcrumb": "str",
+        "aioseo_breadcrumb_json": [
+          {
+            "label": "str",
+            "link": "str"
+          }
+        ],
+        "caption": {
+          "rendered": "str"
+        },
+        "alt_text": "str",
+        "media_type": "str",
+        "mime_type": "str",
+        "media_details": {
+          "width": "int",
+          "height": "int",
+          "file": "str",
+          "filesize": "int",
+          "sizes": {
+            "medium": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "large": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "thumbnail": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "medium_large": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "foxiz_crop_g1": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "foxiz_crop_g2": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "foxiz_crop_g3": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "foxiz_crop_o1": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "echo_preview_image": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-360x180": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-750x375": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-1140x570": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-120x86": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-350x250": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-750x536": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-1140x815": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-360x504": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-75x75": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-featured-750": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "epic-featured-1140": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "filesize": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            },
+            "full": {
+              "file": "str",
+              "width": "int",
+              "height": "int",
+              "mime_type": "str",
+              "source_url": "str"
+            }
+          },
+          "image_meta": {
+            "aperture": "str",
+            "credit": "str",
+            "camera": "str",
+            "caption": "str",
+            "created_timestamp": "str",
+            "copyright": "str",
+            "focal_length": "str",
+            "iso": "str",
+            "shutter_speed": "str",
+            "title": "str",
+            "orientation": "str",
+            "keywords": [],
+            "alt": "str"
+          }
+        },
+        "source_url": "str",
+        "_links": {
+          "self": [
+            {
+              "href": "str",
+              "targetHints": {
+                "allow": [
+                  "str"
+                ]
+              }
+            }
+          ],
+          "collection": [
+            {
+              "href": "str"
+            }
+          ],
+          "about": [
+            {
+              "href": "str"
+            }
+          ],
+          "author": [
+            {
+              "embeddable": "bool",
+              "href": "str"
+            }
+          ],
+          "replies": [
+            {
+              "embeddable": "bool",
+              "href": "str"
+            }
+          ],
+          "wp:attached-to": [
+            {
+              "embeddable": "bool",
+              "post_type": "str",
+              "id": "int",
+              "href": "str"
+            }
+          ],
+          "curies": [
+            {
+              "name": "str",
+              "href": "str",
+              "templated": "bool"
+            }
+          ]
+        }
+      }
+    ],
+    "wp:term": [
+      [
+        {
+          "id": "int",
+          "link": "str",
+          "name": "str",
+          "slug": "str",
+          "taxonomy": "str",
+          "aioseo_head": "str",
+          "aioseo_head_json": {
+            "title": "str",
+            "description": "str",
+            "canonical_url": "str",
+            "robots": "str",
+            "keywords": "str",
+            "webmasterTools": {
+              "msvalidate.01": "str",
+              "miscellaneous": "str"
+            },
+            "schema": {
+              "@context": "str",
+              "@graph": [
+                {
+                  "@type": "str",
+                  "@id": "str",
+                  "itemListElement": [
+                    {
+                      "@type": "str",
+                      "@id": "str",
+                      "position": "int",
+                      "name": "str",
+                      "item": "str",
+                      "nextItem": {
+                        "@type": "str",
+                        "@id": "str",
+                        "name": "str"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "og:locale": "str",
+            "og:site_name": "str",
+            "og:type": "str",
+            "og:title": "str",
+            "og:url": "str",
+            "og:image": "str",
+            "og:image:secure_url": "str",
+            "og:image:width": "int",
+            "og:image:height": "int",
+            "article:publisher": "str",
+            "twitter:card": "str",
+            "twitter:site": "str",
+            "twitter:title": "str",
+            "twitter:image": "str"
+          },
+          "aioseo_meta_data": {
+            "term_id": "str",
+            "title": "null",
+            "description": "null",
+            "keywords": "null",
+            "canonical_url": "null",
+            "og_title": "null",
+            "og_description": "null",
+            "og_object_type": "str",
+            "og_image_type": "str",
+            "og_image_custom_url": "null",
+            "og_image_custom_fields": "null",
+            "og_image_url": "null",
+            "og_image_width": "null",
+            "og_image_height": "null",
+            "og_video": "null",
+            "og_custom_url": "null",
+            "og_article_section": "null",
+            "og_article_tags": "null",
+            "twitter_use_og": "bool",
+            "twitter_card": "str",
+            "twitter_image_type": "str",
+            "twitter_image_custom_url": "null",
+            "twitter_image_custom_fields": "null",
+            "twitter_image_url": "null",
+            "twitter_title": "null",
+            "twitter_description": "null",
+            "pillar_content": "null",
+            "robots_default": "bool",
+            "robots_noindex": "bool",
+            "robots_noarchive": "bool",
+            "robots_nosnippet": "bool",
+            "robots_nofollow": "bool",
+            "robots_noimageindex": "bool",
+            "robots_noodp": "bool",
+            "robots_notranslate": "bool",
+            "robots_max_snippet": "null",
+            "robots_max_videopreview": "null",
+            "robots_max_imagepreview": "str",
+            "priority": "null",
+            "frequency": "null",
+            "local_seo": "null",
+            "breadcrumb_settings": "null",
+            "seo_analyzer_scan_date": "str",
+            "created": "str",
+            "updated": "str"
+          },
+          "aioseo_breadcrumb": "str",
+          "aioseo_breadcrumb_json": [
+            {
+              "label": "str",
+              "link": "str"
+            }
+          ],
+          "_links": {
+            "self": [
+              {
+                "href": "str",
+                "targetHints": {
+                  "allow": [
+                    "str"
+                  ]
+                }
+              }
+            ],
+            "collection": [
+              {
+                "href": "str"
+              }
+            ],
+            "about": [
+              {
+                "href": "str"
+              }
+            ],
+            "wp:post_type": [
+              {
+                "href": "str"
+              }
+            ],
+            "curies": [
+              {
+                "name": "str",
+                "href": "str",
+                "templated": "bool"
+              }
+            ]
+          }
+        }
+      ]
+    ]
+  }
+}

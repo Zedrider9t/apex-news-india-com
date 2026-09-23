@@ -1,0 +1,120 @@
+/* Edition controls use the approved charcoal, red and typography tokens. */
+.edition-switch-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-block: 0 12px;
+}
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: linear-gradient(135deg, #202126, #101115);
+  border-radius: 4px;
+  padding: 3px;
+}
+.language-switcher a {
+  position: relative;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 8px 12px;
+  color: #a5a6ad;
+  border-radius: 2px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.language-switcher a + a:before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 30%;
+  height: 40%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.15);
+}
+.language-switcher a[aria-current="page"] {
+  color: #fff;
+  background: rgba(224, 39, 52, 0.16);
+  box-shadow: inset 0 -2px #e02734;
+}
+.language-switcher a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+.language-switcher a:focus-visible {
+  outline: 2px solid #e02734;
+  outline-offset: 3px;
+}
+.reader-header .shell {
+  height: auto;
+  min-height: 90px;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-block: 16px;
+}
+.reader-header .language-switcher {
+  margin-left: auto;
+}
+@media (min-width: 1101px) {
+  .header .brandrow {
+    position: relative;
+    padding-right: 196px;
+  }
+  .header .edition-switch-row {
+    position: absolute;
+    right: max(32px, calc((100vw - 1440px) / 2));
+    top: 30px;
+    width: auto;
+    padding: 0;
+  }
+  .header.compact .edition-switch-row {
+    top: 16px;
+  }
+  .header .search-trigger {
+    max-width: 175px;
+  }
+  .header-manifesto {
+    display: none;
+  }
+}
+@media (max-width: 1100px) {
+  .edition-switch-row {
+    justify-content: center;
+    padding-block: 0 10px;
+  }
+  .language-switcher a {
+    padding: 7px 14px;
+  }
+}
+@media (max-width: 700px) {
+  .reader-header .language-switcher {
+    margin-left: 0;
+  }
+  .reader-header .shell {
+    justify-content: space-between;
+  }
+  .reader-header .text-link {
+    margin-left: auto;
+    font-size: 10px;
+  }
+  .reader-header .brand {
+    width: 100%;
+  }
+  .edition-line > span:nth-child(2) {
+    max-width: 60%;
+    text-align: right;
+  }
+}
+
+@media (max-width: 700px) {
+  .reader-header .shell {
+    gap: 10px;
+  }
+  .reader-header .language-switcher a {
+    font-size: 9px;
+    padding: 7px 10px;
+  }
+}

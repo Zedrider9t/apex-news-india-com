@@ -1,0 +1,782 @@
+{
+  "name": "Apex News India",
+  "url": "https://apexnewsindia.in",
+  "home": "https://apexnewsindia.in",
+  "gmt_offset": 5.5,
+  "timezone_string": "Asia/Kolkata",
+  "namespaces": [
+    "oembed/1.0",
+    "aioseo/v1",
+    "aioseoBrokenLinkChecker/v1",
+    "contact-form-7/v1",
+    "litespeed/v1",
+    "litespeed/v3",
+    "adsagent/v1",
+    "wpw_auto_poster/v1",
+    "universally/v1",
+    "wordfence/v1",
+    "amp/v1",
+    "elementor-one/v1",
+    "mc4wp/v1",
+    "monsterinsights/v1",
+    "userfeedback/v1",
+    "google-site-kit/v1",
+    "elementor/v1/documents",
+    "elementor/v1",
+    "elementor-ai/v1",
+    "elementor/v1/feedback",
+    "adminify/v1",
+    "daftplug-progressify",
+    "omapp/v1",
+    "wpforms/v1",
+    "wp/v2",
+    "wp-site-health/v1",
+    "wp-block-editor/v1",
+    "wp-abilities/v1"
+  ],
+  "routes": {
+    "/oembed/1.0": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/oembed/1.0/embed": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/oembed/1.0/proxy": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/posts": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/posts/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/posts/(?P<parent>[\\d]+)/revisions": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/posts/(?P<parent>[\\d]+)/revisions/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/posts/(?P<id>[\\d]+)/autosaves": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/posts/(?P<parent>[\\d]+)/autosaves/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/pages": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/pages/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/pages/(?P<parent>[\\d]+)/revisions": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/pages/(?P<parent>[\\d]+)/revisions/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/pages/(?P<id>[\\d]+)/autosaves": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/pages/(?P<parent>[\\d]+)/autosaves/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/media": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/media/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/media/(?P<id>[\\d]+)/post-process": {
+      "methods": [
+        "POST"
+      ]
+    },
+    "/wp/v2/media/(?P<id>[\\d]+)/edit": {
+      "methods": [
+        "POST"
+      ]
+    },
+    "/wp/v2/media/(?P<id>[\\d]+)/sideload": {
+      "methods": [
+        "POST"
+      ]
+    },
+    "/wp/v2/media/(?P<id>[\\d]+)/finalize": {
+      "methods": [
+        "POST"
+      ]
+    },
+    "/wp/v2/menu-items": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/menu-items/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/menu-items/(?P<id>[\\d]+)/autosaves": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/menu-items/(?P<parent>[\\d]+)/autosaves/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/blocks": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/blocks/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/blocks/(?P<parent>[\\d]+)/revisions": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/blocks/(?P<parent>[\\d]+)/revisions/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/blocks/(?P<id>[\\d]+)/autosaves": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/blocks/(?P<parent>[\\d]+)/autosaves/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/templates/(?P<parent>([^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)[\\/\\w%-]+)/revisions": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/templates/(?P<parent>([^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)[\\/\\w%-]+)/revisions/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/templates/(?P<id>([^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)[\\/\\w%-]+)/autosaves": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/templates/(?P<parent>([^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)[\\/\\w%-]+)/autosaves/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/templates": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/templates/lookup": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/templates/(?P<id>([^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)[\\/\\w%-]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/template-parts/(?P<parent>([^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)[\\/\\w%-]+)/revisions": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/template-parts/(?P<parent>([^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)[\\/\\w%-]+)/revisions/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/template-parts/(?P<id>([^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)[\\/\\w%-]+)/autosaves": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/template-parts/(?P<parent>([^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)[\\/\\w%-]+)/autosaves/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/template-parts": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/template-parts/lookup": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/template-parts/(?P<id>([^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)[\\/\\w%-]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/global-styles/(?P<parent>[\\d]+)/revisions": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/global-styles/(?P<parent>[\\d]+)/revisions/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/global-styles/themes/(?P<stylesheet>[\\/\\s%\\w\\.\\(\\)\\[\\]\\@_\\-]+)/variations": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/global-styles/themes/(?P<stylesheet>[^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/global-styles/(?P<id>[\\/\\d+]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH"
+      ]
+    },
+    "/wp/v2/navigation": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/navigation/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/navigation/(?P<parent>[\\d]+)/revisions": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/navigation/(?P<parent>[\\d]+)/revisions/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/navigation/(?P<id>[\\d]+)/autosaves": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/navigation/(?P<parent>[\\d]+)/autosaves/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/font-families": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/font-families/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/font-families/(?P<font_family_id>[\\d]+)/font-faces": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/font-families/(?P<font_family_id>[\\d]+)/font-faces/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/e-floating-buttons": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/e-floating-buttons/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/e-floating-buttons/(?P<parent>[\\d]+)/revisions": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/e-floating-buttons/(?P<parent>[\\d]+)/revisions/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/e-floating-buttons/(?P<id>[\\d]+)/autosaves": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/e-floating-buttons/(?P<parent>[\\d]+)/autosaves/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/elementor_library": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/elementor_library/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/elementor_library/(?P<parent>[\\d]+)/revisions": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/elementor_library/(?P<parent>[\\d]+)/revisions/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/types": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/types/(?P<type>[\\w-]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/statuses": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/statuses/(?P<status>[\\w-]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/taxonomies": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/taxonomies/(?P<taxonomy>[\\w-]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/categories": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/categories/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/tags": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/tags/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/menus": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/menus/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/wp_pattern_category": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/wp_pattern_category/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/users/me": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/users/(?P<user_id>(?:[\\d]+|me))/application-passwords": {
+      "methods": [
+        "GET",
+        "POST",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/users/(?P<user_id>(?:[\\d]+|me))/application-passwords/introspect": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/users/(?P<user_id>(?:[\\d]+|me))/application-passwords/(?P<uuid>[\\w\\-]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/comments": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/comments/(?P<id>[\\d]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/search": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/block-renderer/(?P<name>[a-z0-9-]+/[a-z0-9-]+)": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/block-types": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/block-types/(?P<namespace>[a-zA-Z0-9_-]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/block-types/(?P<namespace>[a-zA-Z0-9_-]+)/(?P<name>[a-zA-Z0-9_-]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/settings": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH"
+      ]
+    },
+    "/wp/v2/themes": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/themes/(?P<stylesheet>[^\\/:<>\\*\\?\"\\|]+(?:\\/[^\\/:<>\\*\\?\"\\|]+)?)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/plugins": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/plugins/(?P<plugin>[^.\\/]+(?:\\/[^.\\/]+)?)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/sidebars": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/sidebars/(?P<id>[\\w-]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH"
+      ]
+    },
+    "/wp/v2/widget-types": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/widget-types/(?P<id>[a-zA-Z0-9_-]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/widget-types/(?P<id>[a-zA-Z0-9_-]+)/encode": {
+      "methods": [
+        "POST"
+      ]
+    },
+    "/wp/v2/widget-types/(?P<id>[a-zA-Z0-9_-]+)/render": {
+      "methods": [
+        "POST"
+      ]
+    },
+    "/wp/v2/widgets": {
+      "methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    "/wp/v2/widgets/(?P<id>[\\w\\-]+)": {
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "/wp/v2/block-directory/search": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/pattern-directory/patterns": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/block-patterns/patterns": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/block-patterns/categories": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/menu-locations": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/menu-locations/(?P<location>[\\w-]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/font-collections": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/font-collections/(?P<slug>[\\/\\w-]+)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/icons": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/icons/(?P<collection>[a-z0-9](?:[a-z0-9_-]*[a-z0-9])?)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/icons/(?P<name>[a-z0-9](?:[a-z0-9_-]*[a-z0-9])?/[a-z0-9](?:[a-z0-9_-]*[a-z0-9])?)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/icon-collections": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/icon-collections/(?P<slug>[a-z0-9](?:[a-z0-9_-]*[a-z0-9])?)": {
+      "methods": [
+        "GET"
+      ]
+    },
+    "/wp/v2/view-config": {
+      "methods": [
+        "GET"
+      ]
+    }
+  }
+}

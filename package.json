@@ -1,0 +1,34 @@
+{
+  "name": "apex-news-india-com",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "check:editions": "node scripts/check-editions.mjs",
+    "test:wordpress": "node scripts/test-wordpress.mjs",
+    "check:wordpress": "node scripts/check-wordpress-preview.mjs",
+    "localize": "node scripts/localize.mjs",
+    "test:localization": "node scripts/test-localization.mjs",
+    "check:localization": "node scripts/check-localization-preview.mjs"
+  },
+  "dependencies": {
+    "htmlparser2": "^12.0.0",
+    "lucide-react": "^0.468.0",
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.5",
+    "prettier": "^3.9.7",
+    "typescript": "^5.7.0"
+  }
+}
