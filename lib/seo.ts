@@ -1,12 +1,35 @@
 import type { Metadata } from "next";
 import type { ApexArticle, Locale, Localized } from "./types";
 import { localeConfig } from "./locales";
+import { informationAlternates, informationContent, informationPath, type InformationSlug } from "./information-content";
 // Set the final public origin before a future deployment. Never infer canonicals from Host.
 export const siteOrigin = new URL(
   process.env.NEXT_PUBLIC_SITE_URL || "https://apexnewsindia.com",
 );
 function alternates(paths: Localized<string>) {
   return { en: paths.en, "hi-Latn": paths.roman, "x-default": paths.en };
+}
+export function informationMetadata(locale: Locale, slug: InformationSlug): Metadata {
+  const copy = informationContent[locale][slug];
+  const title = `${copy.title} | Apex News India`;
+  const path = informationPath(locale, slug);
+  return {
+    title,
+    description: copy.description,
+    robots: { index: true, follow: true },
+    alternates: { canonical: path, languages: alternates(informationAlternates(slug)) },
+    openGraph: {
+      type: "website",
+      title,
+      description: copy.description,
+      url: path,
+      siteName: "Apex News India",
+      locale: localeConfig[locale].ogLocale,
+      alternateLocale: localeConfig[locale === "en" ? "roman" : "en"].ogLocale,
+      images: [{ url: "/images/delhi.jpg", alt: "India Gate, New Delhi" }],
+    },
+    twitter: { card: "summary_large_image", title, description: copy.description, images: ["/images/delhi.jpg"] },
+  };
 }
 export function homeMetadata(locale: Locale): Metadata {
   const title =

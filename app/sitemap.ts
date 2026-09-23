@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { locales } from "@/lib/locales";
 import { getEditionContent } from "@/lib/mock-content";
 import { siteOrigin } from "@/lib/seo";
+import { informationSlugs, informationPath, informationAlternates } from "@/lib/information-content";
 const absolute = (path: string) => new URL(path, siteOrigin).href;
 export default function sitemap(): MetadataRoute.Sitemap {
   return locales.flatMap((locale) => [
@@ -26,5 +27,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
       },
     })),
+    ...informationSlugs.map((slug) => {
+      const paths = informationAlternates(slug);
+      return {
+        url: absolute(informationPath(locale, slug)),
+        alternates: {
+          languages: {
+            en: absolute(paths.en),
+            "hi-Latn": absolute(paths.roman),
+            "x-default": absolute(paths.en),
+          },
+        },
+      };
+    }),
   ]);
 }

@@ -97,7 +97,7 @@ check(sitemapResponse.status === 200, "sitemap exists");
 const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
   (m) => new URL(m[1]),
 );
-check(urls.length === 20, "two homepages and eighteen articles in sitemap");
+check(urls.length === 30, "two homepages, eighteen articles and ten information pages in sitemap");
 for (const url of urls) {
   const locale = url.pathname.split("/")[1];
   const lang = locale === "en" ? "en" : "hi-Latn";
@@ -143,13 +143,33 @@ for (const url of urls) {
     html.includes('class="language-switcher"'),
     `${url.pathname} switcher server-rendered`,
   );
-  const links = [
-    ...html.matchAll(/href="(\/(?:en|roman)\/news\/[^"#?]+)"/g),
-  ].map((m) => m[1]);
-  check(
-    links.some((link) => link.startsWith(`/${locale}/news/`)),
-    `${url.pathname} edition article links`,
-  );
+  if (!/\/(?:privacy-policy|terms|contact|about|support)$/.test(url.pathname)) {
+    const links = [
+      ...html.matchAll(/href="(\/(?:en|roman)\/news\/[^"#?]+)"/g),
+    ].map((m) => m[1]);
+    check(
+      links.some((link) => link.startsWith(`/${locale}/news/`)),
+      `${url.pathname} edition article links`,
+    );
+  } else {
+    const slug = url.pathname.split("/").at(-1);
+    const opposite = locale === "en" ? "roman" : "en";
+    check(html.includes(`href="/${opposite}/${slug}"`), `${url.pathname} equivalent-edition switcher`);
+    for (const info of ["about", "contact", "support", "privacy-policy", "terms"])
+      check(html.includes(`href="/${locale}/${info}"`), `${url.pathname} local footer link to ${info}`);
+    if (slug === "privacy-policy" || slug === "terms")
+      check(html.includes('dateTime="2026-09-23"') || html.includes('datetime="2026-09-23"'), `${url.pathname} effective date`);
+    if (slug === "contact")
+      check(
+        html.includes(locale === "en" ? "verified public contact channel has not yet been published" : "tasdeeq-shuda public contact channel publish nahin hua"),
+        `${url.pathname} contact verification notice`,
+      );
+    if (slug === "support")
+      check(
+        html.includes(locale === "en" ? "availability depends on the source stream" : "source stream par nirbhar hai"),
+        `${url.pathname} live-stream availability guidance`,
+      );
+  }
   if (url.pathname === "/en")
     check(
       html.includes("A new India. A bold vision. The road ahead."),
@@ -165,6 +185,8 @@ for (const path of [
   "/fr",
   "/en/news/missing-story",
   "/roman/news/missing-story",
+  "/en/not-an-information-page",
+  "/roman/not-an-information-page",
 ]) {
   const { response, html } = await get(path);
   check(response.status === 404, `${path} returns 404`);
@@ -183,5 +205,5 @@ check(
   "robots allows editions and advertises sitemap",
 );
 console.log(
-  `PASS: ${checks} edition routing, language, content and SEO assertions across 20 pages.`,
+  `PASS: ${checks} edition routing, language, content and SEO assertions across 30 pages.`,
 );

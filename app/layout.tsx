@@ -6,6 +6,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import "./refinements.css";
 import "./editions.css";
+import "./[locale]/[information]/page.css";
 const display = localFont({
   src: "./fonts/barlow-condensed-bold.ttf",
   variable: "--font-display",

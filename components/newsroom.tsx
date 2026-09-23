@@ -38,6 +38,7 @@ import { Brand } from "./brand";
 import { Hero } from "./hero";
 import { BroadcastPanel } from "./broadcast-panel";
 import { SectionHeading } from "./section-heading";
+import { InformationLinks } from "./information-links";
 
 type Props = {
   articles: ApexArticle[];
@@ -841,19 +842,7 @@ export function Newsroom({
           <div className="footer-bottom">
             <span>{t("© 2026 Apex News India. All rights reserved.")}</span>
             <div>
-              <button
-                onClick={() =>
-                  openInfo(
-                    t("About Apex"),
-                    t(
-                      "Apex News India ka Roman Hindi edition: desh aur duniya ki khabrein, aasaan bhasha mein. Yeh nayi website ka local design preview hai.",
-                    ),
-                  )
-                }
-              >
-                {" "}
-                {t("About us")}{" "}
-              </button>
+              <InformationLinks locale={locale} />
               <button
                 onClick={() =>
                   openInfo(
@@ -866,19 +855,6 @@ export function Newsroom({
               >
                 {" "}
                 {t("Editorial policy")}{" "}
-              </button>
-              <button
-                onClick={() =>
-                  openInfo(
-                    t("Privacy — preview"),
-                    t(
-                      "Is local preview mein search browser mein hoti hai. Newsletter signup, analytics aur account tracking connect nahi kiye gaye hain. Launch se pehle poori privacy policy jodi jaayegi.",
-                    ),
-                  )
-                }
-              >
-                {" "}
-                {t("Privacy")}{" "}
               </button>
               <a href="#main">{t("Back to top ↑")}</a>
             </div>
