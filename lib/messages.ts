@@ -210,6 +210,8 @@ const source = {
   "Skip to story": "Skip to story",
   "Back to newsroom": "Back to newsroom",
   "Sample story": "Sample story",
+  News: "News",
+  "Original Hindi source": "Original Hindi source",
   "/ THE APEX EDIT": "/ THE APEX EDIT",
   "DESIGN PREVIEW — Yeh sample story hai, verified news report nahi. Tasveer prateekatmak hai.":
     "DESIGN PREVIEW — Yeh sample story hai, verified news report nahi. Tasveer prateekatmak hai.",
@@ -281,6 +283,7 @@ export const messages: Record<Locale, Messages> = {
       "DESIGN PREVIEW — Yeh sample story hai, verified news report nahi. Tasveer prateekatmak hai.":
         "DESIGN PREVIEW — This is a sample story, not a verified news report. Photography is representative.",
       "Newsroom mein wapas": "Back to the newsroom",
+      "Original Hindi source": "Original Hindi source",
       "Aage bhi padhiye.": "Keep reading.",
     },
   },
