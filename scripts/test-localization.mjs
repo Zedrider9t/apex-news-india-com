@@ -266,12 +266,19 @@ for (const locale of ["en", "roman"]) {
     "duplicate IDs rejected",
   );
   const altered = structuredClone(response.segments);
-  altered[0].text = altered[0].text.replace("⟦APX0⟧", "wrong");
+  const protectedIndex = altered.findIndex((segment) =>
+    segment.text.includes("⟦APX"),
+  );
+  check(protectedIndex >= 0, "fixture contains a byte-stable protected literal");
+  altered[protectedIndex].text = altered[protectedIndex].text.replace(
+    /⟦APX\d+⟧/,
+    "wrong",
+  );
   check(
     restoreSegments(protectedPlan, altered).issues.some(
       (i) => i.code === "protected_literal",
     ),
-    "entity deletion detected",
+    "protected literal deletion detected",
   );
   const numbers = structuredClone(restored.translations);
   const numeric = Object.keys(numbers).find((k) => numbers[k].includes("2026"));
