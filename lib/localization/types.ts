@@ -19,8 +19,6 @@ export interface ValidationIssue {
   severity: "error" | "warning";
   segmentId?: string;
   message: string;
-  sourceEvidence: string;
-  translationEvidence: string;
 }
 export interface ValidationResult {
   passed: boolean;
@@ -69,6 +67,8 @@ export interface FactualVerificationIssue {
     | "addition"
     | "meaning";
   message: string;
+  sourceEvidence: string;
+  translationEvidence: string;
 }
 export interface FactualVerificationResponse {
   passed: boolean;
