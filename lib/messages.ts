@@ -417,6 +417,8 @@ export const messages: Record<Locale, Messages> = {
       "Skip to story": "Seedha khabar par jaayein",
       "Back to newsroom": "Newsroom mein wapas",
       "Sample story": "Sample khabar",
+      News: "Khabar",
+      "Original Hindi source": "Asli Hindi source",
       "· Representative photograph / Unsplash":
         "· Prateekatmak tasveer / Unsplash",
       "Is local preview mein search browser mein hoti hai. Newsletter signup, analytics aur account tracking connect nahi kiye gaye hain. Launch se pehle poori privacy policy jodi jaayegi.":
