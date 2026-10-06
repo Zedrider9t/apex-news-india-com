@@ -330,10 +330,10 @@ export function restoreSegments(
     if (order.join("|") !== Object.keys(map).join("|"))
       issues.push({
         code: "literal_order",
-        severity: "warning",
+        severity: "error",
         segmentId: row.id,
         message:
-          "Protected values changed order; verify date/amount/entity associations against the source",
+          "Protected values changed order; factual number/date/entity associations cannot be trusted",
       });
     for (const [token, value] of Object.entries(map)) {
       if (text.split(token).length - 1 !== 1)
