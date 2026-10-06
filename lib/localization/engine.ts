@@ -637,3 +637,73 @@ export async function approveRevision(
     return revision;
   });
 }
+
+
+/** Atomically approve the current English and Roman Hindi revisions for one story.
+ * This is still an editorial gate only; it does not write to WordPress. */
+export async function approveStory(
+  repo: LocalizationRepository,
+  id: number,
+  actor: string,
+  note: string,
+) {
+  if (!actor.trim() || !note.trim())
+    throw new Error("Reviewer identity and review note are required");
+  return repo.transact((db) => {
+    const record = db.stories[String(id)];
+    if (
+      !record ||
+      record.state !== "active" ||
+      record.availability !== "available"
+    )
+      throw new Error("Only an active, available story can be approved");
+
+    const revisions = (["en", "roman"] as const).map((locale) => {
+      const revisionId = record.current[locale];
+      const revision = record.revisions.find(
+        (item) => item.revisionId === revisionId,
+      );
+      if (
+        !revision ||
+        revision.locale !== locale ||
+        revision.sourceRevisionHash !== record.currentSourceHash ||
+        revision.translationStatus !== "generated" ||
+        !revision.validation.passed ||
+        revision.sourceDeleted ||
+        revision.sourceUnpublished
+      )
+        throw new Error(
+          `Both current language revisions must be generated, validated and based on the current source (failed at ${locale})`,
+        );
+      return revision;
+    });
+
+    const stamp = now();
+    for (const revision of revisions) {
+      revision.editorialStatus = "manually_approved";
+      revision.publishStatus = "ready";
+      record.events.push({
+        revisionId: revision.revisionId,
+        action: "story_manually_approved",
+        actor,
+        note,
+        at: stamp,
+      });
+    }
+
+    return {
+      sourcePostId: id,
+      sourceRevisionHash: record.currentSourceHash,
+      revisions: Object.fromEntries(
+        revisions.map((revision) => [
+          revision.locale,
+          {
+            revisionId: revision.revisionId,
+            editorialStatus: revision.editorialStatus,
+            publishStatus: revision.publishStatus,
+          },
+        ]),
+      ),
+    };
+  });
+}
