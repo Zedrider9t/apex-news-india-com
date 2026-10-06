@@ -105,14 +105,17 @@ export class GeminiTranslationProvider implements TranslationProvider {
                   {
                     text: JSON.stringify({
                       target: request.locale,
-                      segments: request.segments,
+                      segments: request.segments.map(
+                        ({ protectedLiterals: _protectedLiterals, ...segment }) =>
+                          segment,
+                      ),
                     }),
                   },
                 ],
               },
             ],
             generationConfig: {
-              temperature: 0.1,
+              temperature: 0,
               maxOutputTokens: 16384,
               responseMimeType: "application/json",
               responseJsonSchema: schema,
