@@ -50,8 +50,16 @@ const verificationSchema = {
             ],
           },
           message: { type: "string" },
+          sourceEvidence: { type: "string" },
+          translationEvidence: { type: "string" },
         },
-        required: ["segmentId", "type", "message"],
+        required: [
+          "segmentId",
+          "type",
+          "message",
+          "sourceEvidence",
+          "translationEvidence",
+        ],
         additionalProperties: false,
       },
     },
@@ -353,7 +361,7 @@ export class GeminiTranslationProvider implements TranslationProvider {
               parts: [
                 {
                   text:
-                    "You are a factual translation verifier for a news publisher. Compare each Hindi source segment with its translated segment. Do not rewrite the translation. Check factual equivalence only: which numbers belong to which nouns or events, dates, names and organizations, attribution/uncertainty, quotations, omissions, additions, and meaning. Natural word-order changes are allowed. Mark passed=false if any material factual mismatch exists. Return concise issues tied to the exact segment id. Do not use outside knowledge.",
+                    "You are a factual translation verifier for a news publisher. Compare each Hindi source segment with its translated segment. Do not rewrite the translation. Check only what is explicitly present in the supplied source and translation. Never use outside knowledge, current date, historical context, arithmetic inference, age inference, or facts implied by a year. Natural word-order changes are allowed. For every issue, quote a short exact sourceEvidence substring and a short exact translationEvidence substring from that same segment. For an omission, translationEvidence may be empty. For an addition, sourceEvidence may be empty. If you cannot support an issue with exact supplied text, do not report it. Check number-to-noun associations, dates, names/organizations, attribution/uncertainty, quotations, omissions, additions, and meaning. Mark passed=false only for a material mismatch supported by those exact excerpts.",
                 },
               ],
             },
@@ -438,6 +446,12 @@ export class GeminiTranslationProvider implements TranslationProvider {
             ? issue.type.trim().toLowerCase().replace(/[\s-]+/g, "_")
             : "",
         message: typeof issue.message === "string" ? issue.message : "",
+        sourceEvidence:
+          typeof issue.sourceEvidence === "string" ? issue.sourceEvidence : "",
+        translationEvidence:
+          typeof issue.translationEvidence === "string"
+            ? issue.translationEvidence
+            : "",
       }));
       if (
         typeof out.passed !== "boolean" ||
@@ -450,7 +464,9 @@ export class GeminiTranslationProvider implements TranslationProvider {
             !issue.segmentId ||
             !allowedTypes.has(issue.type) ||
             !issue.message ||
-            issue.message.length > 1000,
+            issue.message.length > 1000 ||
+            issue.sourceEvidence.length > 1000 ||
+            issue.translationEvidence.length > 1000,
         )
       )
         throw new TranslationProviderError(
@@ -467,6 +483,8 @@ export class GeminiTranslationProvider implements TranslationProvider {
           segmentId: issue.segmentId,
           type: issue.type as FactualVerificationResponse["issues"][number]["type"],
           message: issue.message,
+          sourceEvidence: issue.sourceEvidence,
+          translationEvidence: issue.translationEvidence,
         }));
       return {
         passed: out.passed,
