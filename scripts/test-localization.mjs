@@ -117,6 +117,18 @@ class FixtureProvider {
       },
     };
   }
+  async verify(request) {
+    return {
+      passed: true,
+      confidence: 0.99,
+      issues: [],
+      metadata: {
+        provider: this.name,
+        model: this.model,
+        promptVersion: request.promptVersion,
+      },
+    };
+  }
 }
 const base = makeSourceRevision(source);
 check(base.changeKind === "new", "new source");
@@ -242,7 +254,7 @@ for (const locale of ["en", "roman"]) {
     "duplicate IDs rejected",
   );
   const altered = structuredClone(response.segments);
-  altered[0].text = altered[0].text.replace("__APX_0__", "wrong");
+  altered[0].text = altered[0].text.replace("⟦APX0⟧", "wrong");
   check(
     restoreSegments(protectedPlan, altered).issues.some(
       (i) => i.code === "protected_literal",
@@ -626,6 +638,9 @@ try {
       await held;
       return provider.translate(req);
     },
+    async verify(req) {
+      return provider.verify(req);
+    },
   };
   const running = localizeStory(repo, source.sourcePostId, "en", slow, {
     verifySource: active(source),
@@ -682,7 +697,7 @@ try {
 const key = "test-key-never-used-on-network";
 const request = {
   locale: "roman",
-  segments: [{ id: "title", text: "__APX_0__ की बैठक", context: "headline" }],
+  segments: [{ id: "title", text: "⟦APX0⟧ की बैठक", context: "headline" }],
   promptVersion: PROMPT_VERSION,
 };
 let fetchCalls = 0;
@@ -696,7 +711,7 @@ const successFetch = async (url, init) => {
   check(init.headers["x-goog-api-key"] === key, "key only in server header");
   const body = JSON.parse(init.body);
   check(
-    body.generationConfig.responseFormat.text.mimeType === "application/json",
+    body.generationConfig.responseMimeType === "application/json",
     "structured output configured",
   );
   check(
@@ -712,7 +727,7 @@ const successFetch = async (url, init) => {
             parts: [
               {
                 text: JSON.stringify({
-                  segments: [{ id: "title", text: "__APX_0__ ki baithak" }],
+                  segments: [{ id: "title", text: "⟦APX0⟧ ki baithak" }],
                   confidence: 0.94,
                   warnings: [],
                 }),
