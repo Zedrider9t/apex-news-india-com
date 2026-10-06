@@ -6,7 +6,7 @@ import type {
   ValidationIssue,
   ValidationResult,
 } from "./types";
-export const VALIDATOR_VERSION = "apex-translation-checks-v1";
+export const VALIDATOR_VERSION = "apex-translation-checks-v2";
 const atoms = (s: string) =>
   (s.match(/[0-9०-९]+(?:[.,:/-][0-9०-९]+)*/g) ?? []).sort();
 const urls = (s: string) => (s.match(/https?:\/\/[^\s<>"“”]+/g) ?? []).sort();
