@@ -247,6 +247,19 @@ for (const locale of ["en", "roman"]) {
   );
   check(html.includes("test.webp"), "image retained");
   check(html.includes("“") && html.includes("”"), "quote structure retained");
+  const quoteStyleOnly = structuredClone(restored.translations);
+  const quoteSegment = Object.keys(quoteStyleOnly).find((key) =>
+    /[“”]/.test(quoteStyleOnly[key]),
+  );
+  if (quoteSegment) {
+    quoteStyleOnly[quoteSegment] = quoteStyleOnly[quoteSegment]
+      .replace(/“/g, '"')
+      .replace(/”/g, '"');
+    check(
+      validateTranslation(plan, quoteStyleOnly, locale).passed,
+      "equivalent straight/curly quote glyphs are accepted",
+    );
+  }
   check(
     canonical(structure(plan.body.nodes)) ===
       canonical(structure(planHtml(html).nodes)),
