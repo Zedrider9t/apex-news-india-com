@@ -36,7 +36,19 @@ const verificationSchema = {
         type: "object",
         properties: {
           segmentId: { type: "string" },
-          type: { type: "string" },
+          type: {
+            type: "string",
+            enum: [
+              "number_association",
+              "date",
+              "name_entity",
+              "attribution",
+              "quote",
+              "omission",
+              "addition",
+              "meaning",
+            ],
+          },
           message: { type: "string" },
         },
         required: ["segmentId", "type", "message"],
@@ -418,18 +430,26 @@ export class GeminiTranslationProvider implements TranslationProvider {
         );
       }
       const issues = Array.isArray(out.issues) ? out.issues.map(object) : [];
+      const normalizedIssues = issues.map((issue) => ({
+        segmentId:
+          typeof issue.segmentId === "string" ? issue.segmentId : "",
+        type:
+          typeof issue.type === "string"
+            ? issue.type.trim().toLowerCase().replace(/[\s-]+/g, "_")
+            : "",
+        message: typeof issue.message === "string" ? issue.message : "",
+      }));
       if (
         typeof out.passed !== "boolean" ||
         typeof out.confidence !== "number" ||
         out.confidence < 0 ||
         out.confidence > 1 ||
-        issues.length > 100 ||
-        issues.some(
+        normalizedIssues.length > 100 ||
+        normalizedIssues.some(
           (issue) =>
-            typeof issue.segmentId !== "string" ||
-            typeof issue.type !== "string" ||
+            !issue.segmentId ||
             !allowedTypes.has(issue.type) ||
-            typeof issue.message !== "string" ||
+            !issue.message ||
             issue.message.length > 1000,
         )
       )
@@ -443,10 +463,10 @@ export class GeminiTranslationProvider implements TranslationProvider {
         ),
       ) as Record<string, number>;
       const verifiedIssues: FactualVerificationResponse["issues"] =
-        issues.map((issue) => ({
-          segmentId: issue.segmentId as string,
+        normalizedIssues.map((issue) => ({
+          segmentId: issue.segmentId,
           type: issue.type as FactualVerificationResponse["issues"][number]["type"],
-          message: issue.message as string,
+          message: issue.message,
         }));
       return {
         passed: out.passed,
