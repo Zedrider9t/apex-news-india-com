@@ -67,6 +67,12 @@ const replace = (s, locale) => {
   const pairs =
     locale === "en"
       ? [
+          ["प्रधानमंत्री नरेंद्र मोदी", "Prime Minister Narendra Modi"],
+          ["17 सितंबर 2026", "17 September 2026"],
+          ["2 करोड़ रुपये", "2 crore rupees"],
+          ["दिल्ली", "Delhi"],
+          ["सरकार", "government"],
+          ["भारत", "India"],
           ["की बैठक", "meeting"],
           ["में बैठक", "meeting in"],
           ["बैठक", "Meeting"],
@@ -81,6 +87,12 @@ const replace = (s, locale) => {
           ["।", "."],
         ]
       : [
+          ["प्रधानमंत्री नरेंद्र मोदी", "Pradhanmantri Narendra Modi"],
+          ["17 सितंबर 2026", "17 September 2026"],
+          ["2 करोड़ रुपये", "2 crore rupaye"],
+          ["दिल्ली", "Delhi"],
+          ["सरकार", "sarkar"],
+          ["भारत", "Bharat"],
           ["की बैठक", "ki baithak"],
           ["में बैठक", "mein baithak"],
           ["बैठक", "Baithak"],
