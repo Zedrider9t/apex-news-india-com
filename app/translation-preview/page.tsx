@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Brand } from "@/components/brand";
 import { JsonLocalizationRepository } from "@/lib/localization/repository";
+import { ApproveStoryForm } from "@/components/localization-approve-story-form";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export default async function TranslationIndex() {
@@ -59,17 +60,42 @@ export default async function TranslationIndex() {
                 </Link>
               </nav>
               {(["en", "roman"] as const).map((locale) => {
-                const last = record.revisions
-                  .filter((r) => r.locale === locale)
-                  .at(-1);
+                const currentId = record.current[locale];
+                const current = record.revisions.find(
+                  (revision) => revision.revisionId === currentId,
+                );
                 return (
                   <p key={locale}>
-                    {locale}: {last?.translationStatus ?? "pending"} ·{" "}
-                    {last?.editorialStatus ?? "needs_review"} ·{" "}
-                    {last?.publishStatus ?? "draft"}
+                    {locale}: {current?.translationStatus ?? "pending"} ·{" "}
+                    {current?.editorialStatus ?? "needs_review"} ·{" "}
+                    {current?.publishStatus ?? "draft"}
                   </p>
                 );
               })}
+              {(() => {
+                const current = (["en", "roman"] as const).map((locale) => {
+                  const id = record.current[locale];
+                  return record.revisions.find(
+                    (revision) => revision.revisionId === id,
+                  );
+                });
+                const approvable =
+                  process.env.NODE_ENV !== "production" &&
+                  current.every(
+                    (revision) =>
+                      revision &&
+                      revision.translationStatus === "generated" &&
+                      revision.validation.passed &&
+                      revision.sourceRevisionHash === record.currentSourceHash &&
+                      revision.editorialStatus !== "manually_approved",
+                  );
+                return (
+                  <ApproveStoryForm
+                    sourcePostId={record.sourcePostId}
+                    enabled={approvable}
+                  />
+                );
+              })()}
             </section>
           ))
         )}
