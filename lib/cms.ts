@@ -224,7 +224,7 @@ export async function getHomepageArticles(
       ...article,
       editorial: {
         ...article.editorial,
-        heroRank: index + 1,
+        heroRank: index === 0 ? 1 : undefined,
         latestRank: index + 1,
         trendingRank: index + 1,
         special: index === 0,
