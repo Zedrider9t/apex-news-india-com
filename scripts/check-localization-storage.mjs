@@ -9,9 +9,8 @@ if (
 )
   throw new Error("Optional pilot post ID must be a positive integer");
 
-const configured = process.env.LOCALIZATION_DATA_DIR;
-if (!configured?.trim())
-  throw new Error("LOCALIZATION_DATA_DIR is not configured");
+const configured =
+  process.env.LOCALIZATION_DATA_DIR?.trim() || ".data/localization";
 
 const directory = resolve(configured);
 const publicRoot = resolve("public");
