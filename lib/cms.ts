@@ -8,6 +8,11 @@ import type {
   TranslationLocale,
 } from "./localization/types";
 import { inspectHtml } from "./wordpress/html";
+import {
+  planHtml,
+  renderHtml,
+  type HtmlNode,
+} from "./localization/html";
 
 export type { ApexArticle } from "./types";
 
@@ -32,6 +37,45 @@ const categoryMap: Record<string, Category> = {
   northeast: "North East",
   "north east": "North East",
 };
+
+function normalizedText(value: string): string {
+  return value
+    .replace(/\[(?:\.\.\.|…)?\]\s*$/u, "")
+    .replace(/(?:\.\.\.|…)+\s*$/u, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function nodeText(node: HtmlNode): string {
+  if (node.type === "text") return node.text;
+  if (node.type === "comment") return "";
+  return node.children.map(nodeText).join(" ");
+}
+
+function suppressDuplicateLead(html: string, excerpt: string): string {
+  const plan = planHtml(html, "render");
+  const excerptText = normalizedText(excerpt);
+  if (excerptText.length < 60) return renderHtml(plan.nodes);
+
+  const index = plan.nodes.findIndex((node) => {
+    if (node.type !== "element" || !["p", "div"].includes(node.tag))
+      return false;
+    const bodyText = normalizedText(nodeText(node));
+    if (bodyText.length < 60) return false;
+    return (
+      bodyText === excerptText ||
+      bodyText.startsWith(excerptText) ||
+      excerptText.startsWith(bodyText)
+    );
+  });
+
+  return renderHtml(
+    index >= 0
+      ? plan.nodes.filter((_, nodeIndex) => nodeIndex !== index)
+      : plan.nodes,
+  );
+}
 
 function resolveCategory(record: StoryRecord, revision: LocalizedArticle): Category {
   const source = record.sources.find(
@@ -89,7 +133,11 @@ function toArticle(
     ? articlePath(counterpartLocale, counterpart.localizedSlug)
     : `/${counterpartLocale}`;
 
-  const content = inspectHtml(revision.localizedContent).paragraphs;
+  const contentHtml = suppressDuplicateLead(
+    revision.localizedContent,
+    revision.localizedExcerpt,
+  );
+  const content = inspectHtml(contentHtml).paragraphs;
   const featuredImage =
     source.featuredImage?.url || "/images/source-unavailable.svg";
   const imageAlt =
@@ -108,6 +156,7 @@ function toArticle(
     title: revision.localizedTitle,
     excerpt: revision.localizedExcerpt,
     content,
+    contentHtml,
     featuredImage,
     imageAlt,
     category: resolveCategory(record, revision),
