@@ -50,10 +50,35 @@ export interface TranslationResponse {
   warnings: string[];
   metadata: ProviderMetadata;
 }
+export interface FactualVerificationRequest {
+  locale: TranslationLocale;
+  segments: Array<{ id: string; source: string; translation: string }>;
+  promptVersion: string;
+}
+export interface FactualVerificationIssue {
+  segmentId: string;
+  type:
+    | "number_association"
+    | "date"
+    | "name_entity"
+    | "attribution"
+    | "quote"
+    | "omission"
+    | "addition"
+    | "meaning";
+  message: string;
+}
+export interface FactualVerificationResponse {
+  passed: boolean;
+  confidence: number;
+  issues: FactualVerificationIssue[];
+  metadata: ProviderMetadata;
+}
 export interface TranslationProvider {
   readonly name: string;
   readonly model: string;
   translate(request: TranslationRequest): Promise<TranslationResponse>;
+  verify(request: FactualVerificationRequest): Promise<FactualVerificationResponse>;
 }
 export interface SourceRevision {
   hash: string;
