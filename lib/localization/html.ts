@@ -286,18 +286,18 @@ export function protectSegments(
     .map(escapeRegex)
     .join("|");
   const pattern = new RegExp(
-    `https?:\\/\\/[^\\s<>"“”]+|\\[[^\\]\\n]+\\]|[0-9०-९]+(?:[.,:/-][0-9०-९]+)*|[₹$€£%“”«»"]|(?<![\\p{L}\\p{M}])(?:${glossary})(?![\\p{L}\\p{M}])|[A-Za-z][A-Za-z._-]*(?: [A-Z][A-Za-z._-]*)*`,
+    `https?:\\/\\/[^\\s<>"“”]+|\\[[^\\]\\n]+\\]|[0-9०-९]+(?:[.,:/-][0-9०-९]+)*|[₹$€£%“”«»"]|(?<![\\p{L}\\p{M}])(?:${glossary})(?![\\p{L}\\p{M}])|(?:[A-Z][A-Za-z._-]*)(?: [A-Z][A-Za-z._-]*)*|[A-Z]{2,}`,
     "gu",
   );
   return {
     tokens,
     segments: segments.map((segment) => {
-      if (segment.text.includes("__APX_"))
+      if (segment.text.includes("⟦APX"))
         throw new Error("Reserved localization token in source");
       const map: Record<string, string> = {};
       tokens[segment.id] = map;
       const text = segment.text.replace(pattern, (match) => {
-        const token = `__APX_${Object.keys(map).length}__`;
+        const token = `⟦APX${Object.keys(map).length}⟧`;
         map[token] = GLOSSARY[match]?.[locale] ?? match;
         return token;
       });
@@ -326,7 +326,7 @@ export function restoreSegments(
     seen.add(row.id);
     let text = row.text;
     const map = protectedPlan.tokens[row.id];
-    const order = text.match(/__APX_\d+__/g) ?? [];
+    const order = text.match(/⟦APX\d+⟧/g) ?? [];
     if (order.join("|") !== Object.keys(map).join("|"))
       issues.push({
         code: "literal_order",
@@ -345,7 +345,7 @@ export function restoreSegments(
         });
       text = text.split(token).join(value);
     }
-    if (/__APX_/.test(text))
+    if (/⟦APX\d+⟧/.test(text))
       issues.push({
         code: "unexpected_token",
         severity: "error",
