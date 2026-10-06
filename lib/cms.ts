@@ -172,6 +172,7 @@ function toArticle(
     sourcePostId: source.sourcePostId,
     sourceUrl: source.sourceUrl,
     contentOrigin: "localized",
+    editorial: { latestRank: 0 },
   };
 }
 
