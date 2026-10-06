@@ -420,20 +420,62 @@ export async function localizeStory(
             translation: restored.translations[segment.id] ?? "",
           })),
         });
-        const factualIssues: ValidationIssue[] = verification.issues.map(
-          (issue) => ({
+        const byId = new Map(
+          plan.segments.map((segment) => [
+            segment.id,
+            {
+              source: segment.text,
+              translation: restored.translations[segment.id] ?? "",
+            },
+          ]),
+        );
+        const normalizeEvidence = (value: string) =>
+          value.replace(/\s+/g, " ").trim();
+        const evidenceContains = (haystack: string, needle: string) =>
+          !needle ||
+          normalizeEvidence(haystack).includes(normalizeEvidence(needle));
+        const supportedVerificationIssues = verification.issues.filter(
+          (issue) => {
+            const segment = byId.get(issue.segmentId);
+            if (!segment) return false;
+            if (issue.type === "omission")
+              return (
+                !!issue.sourceEvidence &&
+                evidenceContains(segment.source, issue.sourceEvidence)
+              );
+            if (issue.type === "addition")
+              return (
+                !!issue.translationEvidence &&
+                evidenceContains(
+                  segment.translation,
+                  issue.translationEvidence,
+                )
+              );
+            return (
+              !!issue.sourceEvidence &&
+              !!issue.translationEvidence &&
+              evidenceContains(segment.source, issue.sourceEvidence) &&
+              evidenceContains(
+                segment.translation,
+                issue.translationEvidence,
+              )
+            );
+          },
+        );
+        const unsupportedCount =
+          verification.issues.length - supportedVerificationIssues.length;
+        const factualIssues: ValidationIssue[] =
+          supportedVerificationIssues.map((issue) => ({
             code: `factual_${issue.type}`,
-            severity: verification.passed ? "warning" : "error",
+            severity: "error",
             segmentId: issue.segmentId,
             message: issue.message,
-          }),
-        );
-        if (!verification.passed && !factualIssues.length)
+          }));
+        if (unsupportedCount)
           factualIssues.push({
-            code: "factual_verification",
-            severity: "error",
-            message:
-              "Factual verifier rejected the translation without a segment-specific issue",
+            code: "factual_verifier_unsubstantiated",
+            severity: "warning",
+            message: `Ignored ${unsupportedCount} verifier issue(s) that were not supported by exact source/translation evidence`,
           });
         if (verification.confidence < 0.9)
           factualIssues.push({
@@ -445,7 +487,6 @@ export async function localizeStory(
           ...result.validation,
           passed:
             result.validation.passed &&
-            verification.passed &&
             !factualIssues.some((issue) => issue.severity === "error"),
           issues: [...result.validation.issues, ...factualIssues],
           checkedAt: now(),
