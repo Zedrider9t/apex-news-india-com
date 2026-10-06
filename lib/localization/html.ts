@@ -280,7 +280,7 @@ export function protectSegments(
 ): ProtectedPlan {
   const tokens: ProtectedPlan["tokens"] = {};
   void locale;
-  const pattern = /https?:\\/\\/[^\\s<>"“”]+|\\[[^\\]\\n]+\\]/gu;
+  const pattern = /https?:\/\/[^\s<>"“”]+|\[[^\]\n]+\]/gu;
   return {
     tokens,
     segments: segments.map((segment) => {
