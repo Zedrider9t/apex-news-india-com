@@ -104,9 +104,16 @@ export default async function ArticlePage({
           </figcaption>
         </figure>
         <div className="reader-body">
-          {article.content.map((paragraph, i) => (
-            <p key={i}>{paragraph}</p>
-          ))}
+          {article.contentHtml ? (
+            <div
+              className="reader-rich-content"
+              dangerouslySetInnerHTML={{ __html: article.contentHtml }}
+            />
+          ) : (
+            article.content.map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))
+          )}
           {article.contentOrigin === "localized" && article.sourceUrl && (
             <p className="reader-source">
               <a
