@@ -87,7 +87,7 @@ function toArticle(
   const currentPath = articlePath(locale, revision.localizedSlug);
   const counterpartPath = counterpart
     ? articlePath(counterpartLocale, counterpart.localizedSlug)
-    : articlePath(counterpartLocale, revision.localizedSlug);
+    : `/${counterpartLocale}`;
 
   const content = inspectHtml(revision.localizedContent).paragraphs;
   const featuredImage =
