@@ -269,7 +269,6 @@ export function makePlan(source: SourceStory): LocalizationPlan {
     throw new Error("Article exceeds bounded development localization limit");
   return { body, excerpt, segments, source };
 }
-const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 export interface ProtectedPlan {
   segments: TextSegment[];
   tokens: Record<string, Record<string, string>>;
