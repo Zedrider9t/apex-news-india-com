@@ -3,6 +3,8 @@ import type {
   TranslationProvider,
   TranslationRequest,
   TranslationResponse,
+  FactualVerificationRequest,
+  FactualVerificationResponse,
 } from "../types";
 import { TranslationProviderError, TRANSLATION_RULES } from "../provider";
 const schema = {
@@ -21,6 +23,28 @@ const schema = {
     warnings: { type: "array", items: { type: "string" } },
   },
   required: ["segments", "confidence", "warnings"],
+  additionalProperties: false,
+};
+const verificationSchema = {
+  type: "object",
+  properties: {
+    passed: { type: "boolean" },
+    confidence: { type: "number" },
+    issues: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          segmentId: { type: "string" },
+          type: { type: "string" },
+          message: { type: "string" },
+        },
+        required: ["segmentId", "type", "message"],
+        additionalProperties: false,
+      },
+    },
+  },
+  required: ["passed", "confidence", "issues"],
   additionalProperties: false,
 };
 function object(v: unknown): Record<string, unknown> {
@@ -286,4 +310,167 @@ export class GeminiTranslationProvider implements TranslationProvider {
       clearTimeout(timer);
     }
   }
+  async verify(
+    request: FactualVerificationRequest,
+  ): Promise<FactualVerificationResponse> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+    const allowedTypes = new Set([
+      "number_association",
+      "date",
+      "name_entity",
+      "attribution",
+      "quote",
+      "omission",
+      "addition",
+      "meaning",
+    ]);
+    try {
+      const result = await this.fetcher(
+        `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`,
+        {
+          method: "POST",
+          redirect: "error",
+          signal: controller.signal,
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": this.apiKey,
+          },
+          body: JSON.stringify({
+            systemInstruction: {
+              parts: [
+                {
+                  text:
+                    "You are a factual translation verifier for a news publisher. Compare each Hindi source segment with its translated segment. Do not rewrite the translation. Check factual equivalence only: which numbers belong to which nouns or events, dates, names and organizations, attribution/uncertainty, quotations, omissions, additions, and meaning. Natural word-order changes are allowed. Mark passed=false if any material factual mismatch exists. Return concise issues tied to the exact segment id. Do not use outside knowledge.",
+                },
+              ],
+            },
+            contents: [
+              {
+                role: "user",
+                parts: [
+                  {
+                    text: JSON.stringify({
+                      target: request.locale,
+                      segments: request.segments,
+                    }),
+                  },
+                ],
+              },
+            ],
+            generationConfig: {
+              temperature: 0,
+              maxOutputTokens: 8192,
+              responseMimeType: "application/json",
+              responseJsonSchema: verificationSchema,
+            },
+          }),
+        },
+      );
+      const raw = await result.text();
+      let data: Record<string, unknown>;
+      try {
+        data = object(JSON.parse(raw));
+      } catch {
+        throw new TranslationProviderError(
+          "malformed",
+          `Gemini verifier HTTP ${result.status}: response was not JSON`,
+        );
+      }
+      if (!result.ok) {
+        throw new TranslationProviderError(
+          result.status === 401 ||
+            result.status === 403 ||
+            result.status === 404
+            ? "configuration"
+            : result.status === 429
+              ? "quota"
+              : "unavailable",
+          `Gemini verifier HTTP ${result.status}; verification stopped.`,
+          { httpStatus: result.status },
+        );
+      }
+      const candidates = Array.isArray(data.candidates) ? data.candidates : [];
+      const candidate = object(candidates[0]);
+      if (candidate.finishReason !== "STOP")
+        throw new TranslationProviderError(
+          "blocked",
+          `Gemini verifier did not complete (${
+            typeof candidate.finishReason === "string"
+              ? candidate.finishReason
+              : "NO_CANDIDATE"
+          }).`,
+        );
+      const content = object(candidate.content);
+      const parts = Array.isArray(content.parts) ? content.parts : [];
+      const text = parts
+        .map(object)
+        .filter((p) => p.thought !== true)
+        .map((p) => (typeof p.text === "string" ? p.text : ""))
+        .join("");
+      let out: Record<string, unknown>;
+      try {
+        out = object(JSON.parse(text));
+      } catch {
+        throw new TranslationProviderError(
+          "malformed",
+          "Gemini verifier returned malformed structured output",
+        );
+      }
+      const issues = Array.isArray(out.issues) ? out.issues.map(object) : [];
+      if (
+        typeof out.passed !== "boolean" ||
+        typeof out.confidence !== "number" ||
+        out.confidence < 0 ||
+        out.confidence > 1 ||
+        issues.length > 100 ||
+        issues.some(
+          (issue) =>
+            typeof issue.segmentId !== "string" ||
+            typeof issue.type !== "string" ||
+            !allowedTypes.has(issue.type) ||
+            typeof issue.message !== "string" ||
+            issue.message.length > 1000,
+        )
+      )
+        throw new TranslationProviderError(
+          "malformed",
+          "Gemini verifier output does not match the verification schema",
+        );
+      const usage = Object.fromEntries(
+        Object.entries(object(data.usageMetadata)).filter(
+          ([, v]) => typeof v === "number",
+        ),
+      ) as Record<string, number>;
+      return {
+        passed: out.passed,
+        confidence: out.confidence,
+        issues: issues as FactualVerificationResponse["issues"],
+        metadata: {
+          provider: this.name,
+          model:
+            typeof data.modelVersion === "string"
+              ? data.modelVersion
+              : this.model,
+          promptVersion: request.promptVersion,
+          responseId:
+            typeof data.responseId === "string"
+              ? data.responseId
+              : createHash("sha256").update(text).digest("hex"),
+          usage,
+        },
+      };
+    } catch (error) {
+      if (error instanceof TranslationProviderError) throw error;
+      throw new TranslationProviderError(
+        controller.signal.aborted ? "timeout" : "unavailable",
+        controller.signal.aborted
+          ? "Gemini factual verification timed out."
+          : "Gemini factual verification request failed.",
+      );
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
 }
