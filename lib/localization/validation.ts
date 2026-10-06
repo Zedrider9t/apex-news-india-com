@@ -6,11 +6,11 @@ import type {
   ValidationIssue,
   ValidationResult,
 } from "./types";
-export const VALIDATOR_VERSION = "apex-translation-checks-v2";
+export const VALIDATOR_VERSION = "apex-translation-checks-v3";
 const atoms = (s: string) =>
   (s.match(/[0-9०-९]+(?:[.,:/-][0-9०-९]+)*/g) ?? []).sort();
 const urls = (s: string) => (s.match(/https?:\/\/[^\s<>"“”]+/g) ?? []).sort();
-const quoteMarks = (s: string) => (s.match(/[“”«»"]/g) ?? []).sort();
+const quoteMarks = (s: string) => (s.match(/[“”«»"]/g) ?? []).map(() => "\"");
 export function validateTranslation(
   plan: LocalizationPlan,
   translations: Record<string, string>,
