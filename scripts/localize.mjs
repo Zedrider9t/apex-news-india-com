@@ -3,7 +3,7 @@ const { loadEnvConfig } = nextEnv;
 import { loadTs } from "./wordpress-test-loader.mjs";
 loadEnvConfig(process.cwd());
 const { JsonLocalizationRepository } = loadTs("lib/localization/repository.ts");
-const { observeSource, localizeStory, approveRevision } = loadTs(
+const { observeSource, localizeStory, approveRevision, approveStory } = loadTs(
   "lib/localization/engine.ts",
 );
 const { readPublicSource } = loadTs("lib/localization/source.ts");
@@ -89,9 +89,16 @@ try {
     const [id, revisionId, actor, ...note] = args;
     await approveRevision(repo, Number(id), revisionId, actor, note.join(" "));
     console.log("Local editorial approval recorded. Nothing published.");
+  } else if (command === "approve-story") {
+    const [id, actor, ...note] = args;
+    if (!/^\\d+$/.test(id ?? ""))
+      throw new Error("A valid source post ID is required");
+    const result = await approveStory(repo, Number(id), actor, note.join(" "));
+    console.log(JSON.stringify(result, null, 2));
+    console.log("Both current language revisions approved. Nothing written to WordPress.");
   } else
     throw new Error(
-      "Usage: npm run localize -- seed|sync ID [ID ID] [--retry-failed] | list | approve ID REVISION REVIEWER REVIEW_NOTE",
+      "Usage: npm run localize -- seed|sync ID [ID ID] [--retry-failed] | list | approve ID REVISION REVIEWER REVIEW_NOTE | approve-story ID REVIEWER REVIEW_NOTE",
     );
 } catch (error) {
   // Provider errors have already been redacted; never print HTTP requests, env values or stack traces.
