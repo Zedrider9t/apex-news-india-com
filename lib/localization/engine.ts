@@ -434,10 +434,13 @@ export async function localizeStory(
         const evidenceContains = (haystack: string, needle: string) =>
           !needle ||
           normalizeEvidence(haystack).includes(normalizeEvidence(needle));
+        const externalContextPattern =
+          /\b(current time|current date|today|future date|past date|relative to|implied by|historical context|birthday calculation|age calculation|as of|at present|currently)\b/i;
         const supportedVerificationIssues = verification.issues.filter(
           (issue) => {
             const segment = byId.get(issue.segmentId);
-            if (!segment) return false;
+            if (!segment || externalContextPattern.test(issue.message))
+              return false;
             if (issue.type === "omission")
               return (
                 !!issue.sourceEvidence &&
