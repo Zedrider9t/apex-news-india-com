@@ -93,8 +93,8 @@ export class GeminiTranslationProvider implements TranslationProvider {
                   text:
                     TRANSLATION_RULES +
                     (request.locale === "roman"
-                      ? "\nTarget: natural Roman Hindi for Indian readers. Hindi grammar in Latin script, not English translation or mechanical character transliteration. Prefer Bharat, Pradhanmantri, sarkar, Delhi; preserve conventional proper-name spellings."
-                      : "\nTarget: professional English news translation, semantically faithful to the Hindi. No added background or stylistic rewriting."),
+                      ? "\nTarget: natural Roman Hindi for Indian readers. Keep Hindi grammar and newsroom tone in Latin script; do not translate into English and do not mechanically transliterate word-for-word. Prefer natural broadcast/news phrasing. Use established English terms only where they are normal in Indian news, such as CM, route, bike, rally, medical team. Preserve conventional proper-name spellings and all facts."
+                      : "\nTarget: polished Indian newsroom English that is semantically faithful to the Hindi source. Preserve every fact, caveat, attribution, quote, date, number and named entity, but restructure sentences naturally so they read as original English journalism rather than literal translation. Do not translate Hindi idioms mechanically. Examples: 'हरी झंडी दिखाई' -> 'flagged off'; 'यात्रा निकाली गई' -> 'the rally/yatra was launched' or 'set out' depending on context; 'जानें पूरा रूट' -> 'full route and schedule'; 'दस राज्यों और सैकड़ों गांवों' -> '10 states and hundreds of villages'. Avoid awkward constructions such as 'taken out from' or 'moving with the rally'. No added background, inference or sensationalism."),
                 },
               ],
             },
