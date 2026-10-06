@@ -6,7 +6,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { formatPublishedDate } from "@/lib/format";
 import { EditorialImage as Image } from "@/components/editorial-image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
 import { getArticle, getLatestArticles } from "@/lib/cms";
@@ -37,6 +37,8 @@ export default async function ArticlePage({
   const t = getTranslator(locale);
   const article = await getArticle(locale, slug);
   if (!article) notFound();
+  if (article.contentOrigin === "localized" && slug !== article.slug)
+    permanentRedirect(article.alternatePaths[locale]);
   const related = (await getLatestArticles(locale))
     .filter((a) => a.id !== article.id)
     .slice(0, 3);
