@@ -178,9 +178,16 @@ export async function localizeStory(
     const current = record.revisions.find(
       (r) => r.revisionId === record.current[locale],
     );
+    const currentProviderCompatible = !!(
+      current &&
+      current.translationMetadata.promptVersion === PROMPT_VERSION &&
+      current.translationMetadata.provider === provider.name &&
+      current.translationMetadata.model === provider.model
+    );
     if (
       current?.sourceRevisionHash === source.hash &&
       current.translationStatus === "generated" &&
+      currentProviderCompatible &&
       !current.sourceDeleted &&
       !current.sourceUnpublished &&
       current.publishStatus !== "withdrawn"
@@ -228,6 +235,7 @@ export async function localizeStory(
     const reuse = !!(
       current &&
       current.validation.passed &&
+      currentProviderCompatible &&
       priorSource?.textHash === source.textHash
     );
     draft.translationStatus = "processing";
