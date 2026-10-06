@@ -23,6 +23,8 @@ export interface ApexArticle {
   readMinutes: number;
   author: string;
   sourcePostId?: number;
+  sourceUrl?: string;
+  contentOrigin?: "mock" | "localized";
   editorial?: {
     heroRank?: number;
     latestRank?: number;
