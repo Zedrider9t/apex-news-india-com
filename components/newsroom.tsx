@@ -61,6 +61,9 @@ export function Newsroom({
   broadcastProgramme,
 }: Props) {
   const { locale, t, categoryLabel } = useEdition();
+  const liveEdition =
+    articles.length >= 3 &&
+    articles.every((article) => article.contentOrigin === "localized");
   const [filter, setFilter] = useState<Category | "All">("All");
   const [expanded, setExpanded] = useState(false);
   const [compact, setCompact] = useState(false);
@@ -79,8 +82,9 @@ export function Newsroom({
     0,
     3,
   );
+  const heroIds = new Set(heroSlides.map((article) => article.id));
   const topStories = articles
-    .filter((a) => a.id !== heroSlides[0]?.id)
+    .filter((article) => !heroIds.has(article.id))
     .slice(0, 4);
   const specialArticle =
     articles.find((a) => a.editorial?.special) ?? articles[0];
@@ -191,13 +195,19 @@ export function Newsroom({
       <div className="utility">
         <div className="shell utility-inner">
           <span>
-            <span className="utility-dot" /> {t("WEDNESDAY, 16 SEPTEMBER 2026")}{" "}
-            <span className="utility-location"> {t("/ NEW DELHI")}</span>
+            <span className="utility-dot" />{" "}
+            {liveEdition ? t("APEX NEWS INDIA · LIVE") : t("WEDNESDAY, 16 SEPTEMBER 2026")}{" "}
+            <span className="utility-location">
+              {" "}
+              {liveEdition ? t("/ EDITORIALLY REVIEWED") : t("/ NEW DELHI")}
+            </span>
           </span>
           <div>
             <span className="preview-label">
               {" "}
-              {t("DESIGN PREVIEW · SAMPLE CONTENT")}{" "}
+              {liveEdition
+                ? t("LIVE EDITION · VERIFIED NEWS")
+                : t("DESIGN PREVIEW · SAMPLE CONTENT")}{" "}
             </span>
             <button
               onClick={() =>
