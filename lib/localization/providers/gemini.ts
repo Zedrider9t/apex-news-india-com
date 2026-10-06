@@ -442,10 +442,16 @@ export class GeminiTranslationProvider implements TranslationProvider {
           ([, v]) => typeof v === "number",
         ),
       ) as Record<string, number>;
+      const verifiedIssues: FactualVerificationResponse["issues"] =
+        issues.map((issue) => ({
+          segmentId: issue.segmentId as string,
+          type: issue.type as FactualVerificationResponse["issues"][number]["type"],
+          message: issue.message as string,
+        }));
       return {
         passed: out.passed,
         confidence: out.confidence,
-        issues: issues as FactualVerificationResponse["issues"],
+        issues: verifiedIssues,
         metadata: {
           provider: this.name,
           model:
