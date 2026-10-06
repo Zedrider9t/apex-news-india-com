@@ -4,7 +4,7 @@ import { getTranslator } from "@/lib/messages";
 import { editionCopy } from "@/lib/mock-content";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { formatPublishedDate } from "@/lib/format";
-import Image from "next/image";
+import { EditorialImage as Image } from "@/components/editorial-image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -61,7 +61,7 @@ export default async function ArticlePage({
           <span>/</span>
           <span>{editionCopy[locale].categories[article.category].label}</span>
           <span>/</span>
-          <span>{t("Sample story")}</span>
+          <span>{article.contentOrigin === "localized" ? t("News") : t("Sample story")}</span>
         </div>
         <span className="eyebrow">
           {editionCopy[locale].categories[article.category].label}{" "}
@@ -78,12 +78,14 @@ export default async function ArticlePage({
             {article.readMinutes} {t("min read")}
           </span>
         </div>
-        <div className="sample-notice">
-          {" "}
-          {t(
-            "DESIGN PREVIEW — Yeh sample story hai, verified news report nahi. Tasveer prateekatmak hai.",
-          )}{" "}
-        </div>
+        {article.contentOrigin !== "localized" && (
+          <div className="sample-notice">
+            {" "}
+            {t(
+              "DESIGN PREVIEW — Yeh sample story hai, verified news report nahi. Tasveer prateekatmak hai.",
+            )}{" "}
+          </div>
+        )}
         <figure>
           <div className="reader-image">
             <Image
@@ -95,14 +97,28 @@ export default async function ArticlePage({
             />
           </div>
           <figcaption>
-            {article.imageAlt}{" "}
-            {t("· Representative photograph / Unsplash")}{" "}
+            {article.imageAlt}
+            {article.contentOrigin === "localized"
+              ? ""
+              : ` ${t("· Representative photograph / Unsplash")}`}
           </figcaption>
         </figure>
         <div className="reader-body">
           {article.content.map((paragraph, i) => (
             <p key={i}>{paragraph}</p>
           ))}
+          {article.contentOrigin === "localized" && article.sourceUrl && (
+            <p className="reader-source">
+              <a
+                className="text-link"
+                href={article.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("Original Hindi source")}
+              </a>
+            </p>
+          )}
           <Link className="text-link" href={`/${locale}`}>
             {" "}
             {t("Newsroom mein wapas")} <ArrowLeft size={15} />
