@@ -211,6 +211,29 @@ export async function getLatestArticles(
   ];
 }
 
+export async function getHomepageArticles(
+  locale: Locale,
+): Promise<ApexArticle[]> {
+  const localized = await getReadyLocalizedArticles(locale);
+
+  // Once we have at least three editor-approved stories, the newsroom can run
+  // its core article surfaces without demo headlines. Non-article preview
+  // modules (such as Shorts/Live placeholders) remain independently gated.
+  if (localized.length >= 3)
+    return localized.map((article, index) => ({
+      ...article,
+      editorial: {
+        ...article.editorial,
+        heroRank: index + 1,
+        latestRank: index + 1,
+        trendingRank: index + 1,
+        special: index === 0,
+      },
+    }));
+
+  return getLatestArticles(locale);
+}
+
 export async function getArticle(
   locale: Locale,
   slug: string,
