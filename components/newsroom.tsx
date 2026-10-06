@@ -389,7 +389,9 @@ export function Newsroom({
             <i /> {t("THE APEX EDIT")}{" "}
           </span>
           <span>{t("Khabar ke aage. Sach ke kareeb.")}</span>
-          <span className="edition-number">{t("EDITION 001 / 16.09.26")}</span>
+          <span className="edition-number">
+            {liveEdition ? t("LIVE NEWSROOM") : t("EDITION 001 / 16.09.26")}
+          </span>
         </div>
         <section className="lead-grid" aria-label={t("Lead stories")}>
           <Hero slides={heroSlides} />
