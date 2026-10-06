@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Newsroom } from "@/components/newsroom";
 import { getEditionContent } from "@/lib/mock-content";
-import { getLatestArticles } from "@/lib/cms";
+import { getHomepageArticles } from "@/lib/cms";
 import { isLocale } from "@/lib/locales";
 import { homeMetadata } from "@/lib/seo";
 
@@ -24,7 +24,7 @@ export default async function EditionHome({
   if (!isLocale(locale)) notFound();
 
   const edition = getEditionContent(locale);
-  const articles = await getLatestArticles(locale);
+  const articles = await getHomepageArticles(locale);
 
   return (
     <Newsroom
