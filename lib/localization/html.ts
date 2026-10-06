@@ -1,7 +1,6 @@
 import { Parser } from "htmlparser2";
 import type { SourceStory } from "../wordpress/types";
 import type { TranslationLocale, TextSegment, ValidationIssue } from "./types";
-import { GLOSSARY } from "./glossary";
 export type HtmlNode =
   | { type: "comment"; text: string }
   | { type: "text"; text: string; segmentId?: string }
@@ -281,14 +280,8 @@ export function protectSegments(
   locale: TranslationLocale,
 ): ProtectedPlan {
   const tokens: ProtectedPlan["tokens"] = {};
-  const glossary = Object.keys(GLOSSARY)
-    .sort((a, b) => b.length - a.length)
-    .map(escapeRegex)
-    .join("|");
-  const pattern = new RegExp(
-    `https?:\\/\\/[^\\s<>"“”]+|\\[[^\\]\\n]+\\]|[0-9०-९]+(?:[.,:/-][0-9०-९]+)*|[₹$€£%“”«»"]|(?<![\\p{L}\\p{M}])(?:${glossary})(?![\\p{L}\\p{M}])|(?:[A-Z][A-Za-z._-]*)(?: [A-Z][A-Za-z._-]*)*|[A-Z]{2,}`,
-    "gu",
-  );
+  void locale;
+  const pattern = /https?:\\/\\/[^\\s<>"“”]+|\\[[^\\]\\n]+\\]/gu;
   return {
     tokens,
     segments: segments.map((segment) => {
@@ -298,7 +291,7 @@ export function protectSegments(
       tokens[segment.id] = map;
       const text = segment.text.replace(pattern, (match) => {
         const token = `⟦APX${Object.keys(map).length}⟧`;
-        map[token] = GLOSSARY[match]?.[locale] ?? match;
+        map[token] = match;
         return token;
       });
       return { ...segment, text, protectedLiterals: map };
