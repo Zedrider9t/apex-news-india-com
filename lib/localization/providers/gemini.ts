@@ -114,9 +114,8 @@ export class GeminiTranslationProvider implements TranslationProvider {
             generationConfig: {
               temperature: 0.1,
               maxOutputTokens: 16384,
-              responseFormat: {
-                text: { mimeType: "application/json", schema },
-              },
+              responseMimeType: "application/json",
+              responseJsonSchema: schema,
             },
           }),
         },
