@@ -2003,6 +2003,89 @@ dialog[open] {
 .reader-body > p {
   margin-bottom: 25px;
 }
+.reader-rich-content > * {
+  margin-top: 0;
+}
+.reader-rich-content p,
+.reader-rich-content ul,
+.reader-rich-content ol,
+.reader-rich-content blockquote,
+.reader-rich-content figure,
+.reader-rich-content table {
+  margin: 0 0 25px;
+}
+.reader-rich-content h2,
+.reader-rich-content h3,
+.reader-rich-content h4 {
+  font-family: var(--display);
+  color: var(--text);
+  line-height: 1.18;
+  letter-spacing: 0.05px;
+  margin: 40px 0 16px;
+}
+.reader-rich-content h2 {
+  font-size: 31px;
+}
+.reader-rich-content h3 {
+  font-size: 25px;
+}
+.reader-rich-content h4 {
+  font-size: 20px;
+}
+.reader-rich-content ul,
+.reader-rich-content ol {
+  padding-left: 24px;
+}
+.reader-rich-content li {
+  margin: 8px 0;
+}
+.reader-rich-content blockquote {
+  border-left: 2px solid var(--red);
+  padding: 4px 0 4px 20px;
+  color: #ded7e1;
+  font-size: 18px;
+}
+.reader-rich-content a {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: #f32c3788;
+  text-underline-offset: 3px;
+}
+.reader-rich-content img,
+.reader-rich-content video,
+.reader-rich-content iframe {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+.reader-rich-content iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+.reader-rich-content figcaption {
+  margin-top: 8px;
+  font-size: 9px;
+  color: #85808c;
+}
+.reader-rich-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.reader-rich-content th,
+.reader-rich-content td {
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  text-align: left;
+}
+.reader-rich-content pre {
+  overflow-x: auto;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
 .sample-notice {
   padding: 18px 22px;
   border-left: 2px solid var(--red);
