@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import { Newsroom } from "@/components/newsroom";
 import { getEditionContent } from "@/lib/mock-content";
+import { getLatestArticles } from "@/lib/cms";
 import { isLocale } from "@/lib/locales";
 import { homeMetadata } from "@/lib/seo";
+
 export async function generateMetadata({
   params,
 }: {
@@ -12,6 +14,7 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
   return homeMetadata(locale);
 }
+
 export default async function EditionHome({
   params,
 }: {
@@ -19,5 +22,15 @@ export default async function EditionHome({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <Newsroom key={locale} {...getEditionContent(locale)} />;
+
+  const edition = getEditionContent(locale);
+  const articles = await getLatestArticles(locale);
+
+  return (
+    <Newsroom
+      key={locale}
+      {...edition}
+      articles={articles}
+    />
+  );
 }
