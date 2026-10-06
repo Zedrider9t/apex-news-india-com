@@ -410,6 +410,67 @@ export async function localizeStory(
         ogTitle: result.localizedTitle,
         ogDescription: result.localizedExcerpt,
       };
+      if (result.validation.passed) {
+        const verification = await provider.verify({
+          locale,
+          promptVersion: PROMPT_VERSION,
+          segments: plan.segments.map((segment) => ({
+            id: segment.id,
+            source: segment.text,
+            translation: restored.translations[segment.id] ?? "",
+          })),
+        });
+        const factualIssues: ValidationIssue[] = verification.issues.map(
+          (issue) => ({
+            code: `factual_${issue.type}`,
+            severity: verification.passed ? "warning" : "error",
+            segmentId: issue.segmentId,
+            message: issue.message,
+          }),
+        );
+        if (!verification.passed && !factualIssues.length)
+          factualIssues.push({
+            code: "factual_verification",
+            severity: "error",
+            message:
+              "Factual verifier rejected the translation without a segment-specific issue",
+          });
+        if (verification.confidence < 0.9)
+          factualIssues.push({
+            code: "factual_verification_confidence",
+            severity: verification.passed ? "warning" : "error",
+            message: `Factual verifier confidence ${verification.confidence}`,
+          });
+        result.validation = {
+          ...result.validation,
+          passed:
+            result.validation.passed &&
+            verification.passed &&
+            !factualIssues.some((issue) => issue.severity === "error"),
+          issues: [...result.validation.issues, ...factualIssues],
+          checkedAt: now(),
+        };
+        const currentUsage = result.translationMetadata.usage ?? {};
+        const verifyUsage = verification.metadata.usage ?? {};
+        result.translationMetadata = {
+          ...result.translationMetadata,
+          usage: {
+            ...currentUsage,
+            ...Object.fromEntries(
+              Object.entries(verifyUsage).map(([key, value]) => [
+                `verify_${key}`,
+                value,
+              ]),
+            ),
+          },
+          responseId: [
+            result.translationMetadata.responseId,
+            verification.metadata.responseId,
+          ]
+            .filter(Boolean)
+            .join(","),
+        };
+      }
       result.warnings = result.validation.issues
         .filter((i) => i.severity === "warning")
         .map((i) => `${i.code}: ${i.message}`);
