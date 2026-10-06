@@ -15,6 +15,7 @@ export interface ApexArticle {
   title: string;
   excerpt: string;
   content: string[];
+  contentHtml?: string;
   featuredImage: string;
   imageAlt: string;
   category: Category;
