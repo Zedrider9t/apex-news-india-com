@@ -1,0 +1,33 @@
+name: Apex News Autofeed
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apex-news-autofeed
+  cancel-in-progress: false
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Trigger production autofeed
+        env:
+          APEX_AUTOFEEED_SECRET: ${{ secrets.APEX_AUTOFEEED_SECRET }}
+        run: |
+          if [ -z "$APEX_AUTOFEEED_SECRET" ]; then
+            echo "Missing GitHub Actions secret: APEX_AUTOFEEED_SECRET"
+            exit 1
+          fi
+
+          curl --fail-with-body --silent --show-error \
+            --max-time 240 \
+            --request POST \
+            --header "x-apex-autofeed-secret: $APEX_AUTOFEEED_SECRET" \
+            https://apexnewsindia.com/api/internal/autofeed
