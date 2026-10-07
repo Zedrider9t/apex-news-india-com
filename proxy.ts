@@ -6,7 +6,10 @@ import { editorialAuthorized, editorialChallenge } from "./lib/editorial-auth";
 export function proxy(request: NextRequest) {
   if (
     request.nextUrl.pathname === "/editorial" ||
-    request.nextUrl.pathname.startsWith("/editorial/")
+    request.nextUrl.pathname.startsWith("/editorial/") ||
+    request.nextUrl.pathname === "/translation-preview" ||
+    request.nextUrl.pathname.startsWith("/translation-preview/") ||
+    request.nextUrl.pathname.startsWith("/source-preview/")
   ) {
     if (!editorialAuthorized(request.headers)) return editorialChallenge();
   }
