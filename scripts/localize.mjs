@@ -1,6 +1,10 @@
 import nextEnv from "@next/env";
 const { loadEnvConfig } = nextEnv;
+import { resolve } from "node:path";
 import { loadTs } from "./wordpress-test-loader.mjs";
+
+const runtimeEnvDir = process.env.APEX_RUNTIME_ENV_DIR?.trim();
+if (runtimeEnvDir) loadEnvConfig(resolve(runtimeEnvDir));
 loadEnvConfig(process.cwd());
 const { JsonLocalizationRepository } = loadTs("lib/localization/repository.ts");
 const { observeSource, localizeStory, approveRevision, approveStory } = loadTs(
