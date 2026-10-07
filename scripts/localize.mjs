@@ -1,11 +1,44 @@
-import nextEnv from "@next/env";
-const { loadEnvConfig } = nextEnv;
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { loadTs } from "./wordpress-test-loader.mjs";
 
+function loadEnvFile(path) {
+  if (!existsSync(path)) return;
+  const lines = readFileSync(path, "utf8").split(/\r?\n/);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("#")) continue;
+    const match = /^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/.exec(line);
+    if (!match) continue;
+    const [, key] = match;
+    if (process.env[key] !== undefined) continue;
+
+    let value = match[2].trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      const quote = value[0];
+      value = value.slice(1, -1);
+      if (quote === '"') {
+        value = value
+          .replace(/\\n/g, "\n")
+          .replace(/\\r/g, "\r")
+          .replace(/\\t/g, "\t")
+          .replace(/\\"/g, '"')
+          .replace(/\\\\/g, "\\");
+      }
+    } else {
+      value = value.replace(/\s+#.*$/, "").trim();
+    }
+    process.env[key] = value;
+  }
+}
+
 const runtimeEnvDir = process.env.APEX_RUNTIME_ENV_DIR?.trim();
-if (runtimeEnvDir) loadEnvConfig(resolve(runtimeEnvDir));
-loadEnvConfig(process.cwd());
+if (runtimeEnvDir) loadEnvFile(resolve(runtimeEnvDir, ".env"));
+loadEnvFile(resolve(process.cwd(), ".env.local"));
+loadEnvFile(resolve(process.cwd(), ".env"));
 const { JsonLocalizationRepository } = loadTs("lib/localization/repository.ts");
 const { observeSource, localizeStory, approveRevision, approveStory } = loadTs(
   "lib/localization/engine.ts",
