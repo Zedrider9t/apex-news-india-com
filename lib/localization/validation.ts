@@ -6,7 +6,13 @@ import type {
   ValidationIssue,
   ValidationResult,
 } from "./types";
-export const VALIDATOR_VERSION = "apex-translation-checks-v5";
+export const VALIDATOR_VERSION = "apex-translation-checks-v6";
+
+const romanHindiDateNumberWords: Record<string, string> = {
+  teen: "3",
+  panch: "5",
+  paanch: "5",
+};
 
 const hindiNumberWords: Record<string, string> = {
   "शून्य": "0",
@@ -71,6 +77,11 @@ const hindiMonths = new Set([
   "दिसम्बर",
 ]);
 
+const latinMonths = new Set([
+  "january", "february", "march", "april", "may", "june",
+  "july", "august", "september", "october", "november", "december",
+]);
+
 const atoms = (s: string) => {
   const values = (s.match(/[0-9०-९]+(?:[.,:/-][0-9०-९]+)*/g) ?? []).map(
     digitAtom,
@@ -84,10 +95,15 @@ const atoms = (s: string) => {
     .split(/[\s,.;:!?()[\]{}“”"'’‘—–/-]+/u)
     .filter(Boolean);
   const monthIndexes = tokens
-    .map((token, index) => (hindiMonths.has(token) ? index : -1))
+    .map((token, index) =>
+      hindiMonths.has(token) || latinMonths.has(token.toLowerCase())
+        ? index
+        : -1,
+    )
     .filter((index) => index >= 0);
   const lexical = tokens.flatMap((token, index) => {
-    const value = hindiNumberWords[token];
+    const value =
+      hindiNumberWords[token] ?? romanHindiDateNumberWords[token.toLowerCase()];
     if (!value) return [];
     const nearMonth = monthIndexes.some(
       (monthIndex) => Math.abs(monthIndex - index) <= 3,
