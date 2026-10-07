@@ -5,6 +5,7 @@ import { observeSource, localizeStory } from "@/lib/localization/engine";
 import { readPublicSource } from "@/lib/localization/source";
 import { createTranslationProvider } from "@/lib/localization/providers";
 import { fetchSourceStories } from "@/lib/wordpress/client";
+import type { TranslationLocale } from "@/lib/localization/types";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -66,7 +67,9 @@ export async function POST(request: Request) {
 
       await observeSource(repo, id, canonicalSource);
       const locales: Record<string, unknown> = {};
-      const targetLocales = localeFilter ? [localeFilter] : (["en", "roman"] as const);
+      const targetLocales: TranslationLocale[] = localeFilter
+        ? [localeFilter]
+        : ["en", "roman"];
 
       for (const locale of targetLocales) {
         const result = await localizeStory(repo, id, locale, provider, {
