@@ -7,6 +7,7 @@ const { observeSource, localizeStory, approveRevision, approveStory } = loadTs(
   "lib/localization/engine.ts",
 );
 const { readPublicSource } = loadTs("lib/localization/source.ts");
+const { fetchSourceStories } = loadTs("lib/wordpress/client.ts");
 const { createTranslationProvider } = loadTs(
   "lib/localization/providers/index.ts",
 );
@@ -85,6 +86,53 @@ try {
             );
         }
     }
+  } else if (command === "autofeed") {
+    // Bounded automatic intake: discover the latest published Hindi posts,
+    // store immutable source revisions, and generate current EN + Roman drafts.
+    // Editorial approval remains a separate explicit gate.
+    const requestedLimit = Number(
+      args.find((arg) => /^--limit=\d+$/.test(arg))?.split("=")[1] ?? 6,
+    );
+    if (!Number.isSafeInteger(requestedLimit) || requestedLimit < 1 || requestedLimit > 6)
+      throw new Error("autofeed --limit must be between 1 and 6");
+
+    const latest = await fetchSourceStories({ limit: requestedLimit });
+    if (!latest.ok)
+      throw new Error(`Latest source feed unavailable: ${latest.reason}`);
+
+    const provider = createTranslationProvider();
+    const summary = [];
+    for (const story of [...latest.stories].reverse()) {
+      const id = story.sourcePostId;
+      await observeSource(repo, id, { kind: "active", story });
+      const locales = {};
+      for (const locale of ["en", "roman"]) {
+        const result = await localizeStory(repo, id, locale, provider, {
+          verifySource: () => readPublicSource(id),
+          retryFailed: args.includes("--retry-failed"),
+        });
+        locales[locale] = {
+          result: result.kind,
+          revision: result.revision?.revisionId ?? null,
+          validationPassed: result.revision?.validation?.passed ?? null,
+          editorial: result.revision?.editorialStatus ?? null,
+          publish: result.revision?.publishStatus ?? null,
+        };
+      }
+      summary.push({ id, locales });
+    }
+    console.log(
+      JSON.stringify(
+        {
+          mode: "autofeed",
+          discovered: latest.stories.map((story) => story.sourcePostId),
+          processed: summary,
+          note: "Generated translations remain in editorial review; nothing is auto-approved.",
+        },
+        null,
+        2,
+      ),
+    );
   } else if (command === "approve") {
     const [id, revisionId, actor, ...note] = args;
     await approveRevision(repo, Number(id), revisionId, actor, note.join(" "));
@@ -98,7 +146,7 @@ try {
     console.log("Both current language revisions approved. Nothing written to WordPress.");
   } else
     throw new Error(
-      "Usage: npm run localize -- seed|sync ID [ID ID] [--retry-failed] | list | approve ID REVISION REVIEWER REVIEW_NOTE | approve-story ID REVIEWER REVIEW_NOTE",
+      "Usage: npm run localize -- seed|sync ID [ID ID] [--retry-failed] | autofeed [--limit=1..6] [--retry-failed] | list | approve ID REVISION REVIEWER REVIEW_NOTE | approve-story ID REVIEWER REVIEW_NOTE",
     );
 } catch (error) {
   // Provider errors have already been redacted; never print HTTP requests, env values or stack traces.
