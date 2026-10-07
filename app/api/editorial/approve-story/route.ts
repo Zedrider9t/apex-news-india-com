@@ -42,7 +42,12 @@ export async function POST(request: Request) {
     }
 
     const id = Number(idValue);
-    const actor = typeof actorValue === "string" ? actorValue.trim() : "";
+    const submittedActor =
+      typeof actorValue === "string" ? actorValue.trim() : "";
+    const actor =
+      process.env.NODE_ENV === "production"
+        ? (process.env.APEX_EDITORIAL_USER?.trim() ?? "")
+        : submittedActor;
     const note = typeof noteValue === "string" ? noteValue.trim() : "";
 
     if (!Number.isSafeInteger(id) || id < 1 || !actor || !note)
