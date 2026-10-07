@@ -6,7 +6,7 @@ import type {
   ValidationIssue,
   ValidationResult,
 } from "./types";
-export const VALIDATOR_VERSION = "apex-translation-checks-v4";
+export const VALIDATOR_VERSION = "apex-translation-checks-v5";
 
 const hindiNumberWords: Record<string, string> = {
   "शून्य": "0",
@@ -52,19 +52,48 @@ function digitAtom(value: string): string {
   );
 }
 
+const hindiMonths = new Set([
+  "जनवरी",
+  "फरवरी",
+  "मार्च",
+  "अप्रैल",
+  "मई",
+  "जून",
+  "जुलाई",
+  "अगस्त",
+  "सितंबर",
+  "सितम्बर",
+  "अक्टूबर",
+  "अक्तूबर",
+  "नवंबर",
+  "नवम्बर",
+  "दिसंबर",
+  "दिसम्बर",
+]);
+
 const atoms = (s: string) => {
   const values = (s.match(/[0-9०-९]+(?:[.,:/-][0-9०-९]+)*/g) ?? []).map(
     digitAtom,
   );
 
-  // Hindi news frequently writes calendar day numbers as words (for example
-  // "तीन से पांच अक्तूबर"), while natural English uses digits ("October 3 to 5").
-  // Normalize only exact Hindi cardinal tokens 0–31 so the validator can
-  // preserve the factual values without forcing unnatural English wording.
-  const lexical = s
+  // Only normalize Hindi number words when they are part of a calendar-date
+  // phrase near a Hindi month name, e.g. "तीन से पांच अक्तूबर" -> 3, 5.
+  // Do not treat ordinary prose such as "एक प्रस्ताव" or "तीन शहर" as numeric
+  // atoms, because natural English may render those as "a proposal" or words.
+  const tokens = s
     .split(/[\s,.;:!?()[\]{}“”"'’‘—–/-]+/u)
-    .map((token) => hindiNumberWords[token])
-    .filter((value): value is string => Boolean(value));
+    .filter(Boolean);
+  const monthIndexes = tokens
+    .map((token, index) => (hindiMonths.has(token) ? index : -1))
+    .filter((index) => index >= 0);
+  const lexical = tokens.flatMap((token, index) => {
+    const value = hindiNumberWords[token];
+    if (!value) return [];
+    const nearMonth = monthIndexes.some(
+      (monthIndex) => Math.abs(monthIndex - index) <= 3,
+    );
+    return nearMonth ? [value] : [];
+  });
 
   return [...values, ...lexical].sort();
 };
