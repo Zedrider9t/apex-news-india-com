@@ -176,7 +176,7 @@ function toArticle(
   };
 }
 
-async function getReadyLocalizedArticles(locale: Locale): Promise<ApexArticle[]> {
+export async function getReadyLocalizedArticles(locale: Locale): Promise<ApexArticle[]> {
   const repo = new JsonLocalizationRepository();
   const records = await repo.list();
   return records
@@ -199,6 +199,17 @@ async function getReadyLocalizedArticles(locale: Locale): Promise<ApexArticle[]>
 // The public homepage remains on the frozen demo dataset until production
 // persistence and rollout are complete. Article lookup, however, can serve
 // manually-approved localized pilot stories from the local repository.
+export async function getReadyLocalizedArticle(
+  locale: Locale,
+  idOrSlug: string,
+): Promise<ApexArticle | undefined> {
+  const key = idOrSlug.replace(/^apex-/, "");
+  const localized = await getReadyLocalizedArticles(locale);
+  return localized.find(
+    (article) => article.slug === key || String(article.sourcePostId ?? article.id) === key,
+  );
+}
+
 export async function getLatestArticles(
   locale: Locale,
 ): Promise<ApexArticle[]> {
