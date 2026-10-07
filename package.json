@@ -14,7 +14,8 @@
     "localize": "node scripts/localize.mjs",
     "test:localization": "node scripts/test-localization.mjs",
     "check:localization": "node scripts/check-localization-preview.mjs",
-    "check:storage": "node scripts/check-localization-storage.mjs"
+    "check:storage": "node scripts/check-localization-storage.mjs",
+    "localize:auto": "node scripts/localize.mjs autofeed"
   },
   "dependencies": {
     "htmlparser2": "^12.0.0",
