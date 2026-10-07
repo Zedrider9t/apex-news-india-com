@@ -2,35 +2,58 @@
 set -eu
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
-RUNTIME_ENV_DIR="$ROOT/../config"
-NODE_BIN="${NODE_BIN:-/opt/alt/alt-nodejs22/root/usr/bin/node}"
-DATA_DIR="${LOCALIZATION_DATA_DIR:-$ROOT/../../data/localization}"
-LOCK_DIR="$DATA_DIR/.autofeed-lock"
+CONFIG_ENV="$ROOT/../config/.env"
+DATA_DIR="$ROOT/../../data/localization"
 LOG_FILE="$DATA_DIR/autofeed.log"
+ENDPOINT="${APEX_AUTOFEEED_URL:-https://apexnewsindia.com/api/internal/autofeed}"
 
 mkdir -p "$DATA_DIR"
 
-if ! mkdir "$LOCK_DIR" 2>/dev/null; then
-  printf '%s autofeed skipped: another run is active\n' "$(date -u +%FT%TZ)" >> "$LOG_FILE"
-  exit 0
+if [ ! -f "$CONFIG_ENV" ]; then
+  printf '%s autofeed failed: runtime env file missing\n' "$(date -u +%FT%TZ)" >> "$LOG_FILE"
+  exit 1
 fi
-trap 'rmdir "$LOCK_DIR" 2>/dev/null || true' EXIT INT TERM
 
-cd "$ROOT"
+# Read only the dedicated cron secret. Never eval/source the complete env file.
+SECRET_LINE="$(grep -m1 '^APEX_AUTOFEEED_SECRET=' "$CONFIG_ENV" || true)"
+SECRET="${SECRET_LINE#APEX_AUTOFEEED_SECRET=}"
+SECRET="$(printf '%s' "$SECRET" | sed -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'$//")"
+
+if [ "${#SECRET}" -lt 32 ]; then
+  printf '%s autofeed failed: APEX_AUTOFEEED_SECRET is missing or too short\n' "$(date -u +%FT%TZ)" >> "$LOG_FILE"
+  exit 1
+fi
+
 printf '%s autofeed start\n' "$(date -u +%FT%TZ)" >> "$LOG_FILE"
 
-if APEX_RUNTIME_ENV_DIR="$RUNTIME_ENV_DIR" \
-   LOCALIZATION_DATA_DIR="$DATA_DIR" \
-   REQUIRE_PERSISTENT_LOCALIZATION=true \
-   "$NODE_BIN" scripts/localize.mjs autofeed --limit=6 >> "$LOG_FILE" 2>&1; then
-  printf '%s autofeed complete\n' "$(date -u +%FT%TZ)" >> "$LOG_FILE"
-else
-  status=$?
-  printf '%s autofeed failed status=%s\n' "$(date -u +%FT%TZ)" "$status" >> "$LOG_FILE"
+TMP="$LOG_FILE.response.$$"
+status=0
+http_code="$(
+  curl --silent --show-error --max-time 240 \
+    --output "$TMP" \
+    --write-out '%{http_code}' \
+    --request POST \
+    --header "x-apex-autofeed-secret: $SECRET" \
+    "$ENDPOINT"
+)" || status=$?
+
+if [ "$status" -ne 0 ]; then
+  printf '%s autofeed failed: curl status=%s\n' "$(date -u +%FT%TZ)" "$status" >> "$LOG_FILE"
+  [ -f "$TMP" ] && cat "$TMP" >> "$LOG_FILE"
+  rm -f "$TMP"
   exit "$status"
 fi
 
-if [ -f "$LOG_FILE" ]; then
-  tail -n 2000 "$LOG_FILE" > "$LOG_FILE.tmp"
-  mv "$LOG_FILE.tmp" "$LOG_FILE"
+cat "$TMP" >> "$LOG_FILE"
+printf '\n' >> "$LOG_FILE"
+rm -f "$TMP"
+
+if [ "$http_code" != "200" ]; then
+  printf '%s autofeed failed: HTTP %s\n' "$(date -u +%FT%TZ)" "$http_code" >> "$LOG_FILE"
+  exit 1
 fi
+
+printf '%s autofeed complete\n' "$(date -u +%FT%TZ)" >> "$LOG_FILE"
+
+tail -n 2000 "$LOG_FILE" > "$LOG_FILE.tmp"
+mv "$LOG_FILE.tmp" "$LOG_FILE"
