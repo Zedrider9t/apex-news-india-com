@@ -8,6 +8,7 @@ const { observeSource, localizeStory, approveRevision, approveStory } = loadTs(
 );
 const { readPublicSource } = loadTs("lib/localization/source.ts");
 const { fetchSourceStories } = loadTs("lib/wordpress/client.ts");
+const { makePlan, planHtml } = loadTs("lib/localization/html.ts");
 const { createTranslationProvider } = loadTs(
   "lib/localization/providers/index.ts",
 );
@@ -135,11 +136,41 @@ try {
           validationIssues:
             result.revision?.validation?.issues
               ?.filter((issue) => issue.severity === "error")
-              .map((issue) => ({
-                code: issue.code,
-                segmentId: issue.segmentId ?? null,
-                message: issue.message,
-              })) ?? [],
+              .map((issue) => {
+                const segmentId = issue.segmentId ?? null;
+                let sourceText = null;
+                let outputText = null;
+                if (segmentId && result.revision) {
+                  const sourcePlan = makePlan(canonicalSource.story);
+                  sourceText =
+                    sourcePlan.segments.find((segment) => segment.id === segmentId)
+                      ?.text ?? null;
+                  if (segmentId === "title") {
+                    outputText = result.revision.localizedTitle;
+                  } else if (segmentId.startsWith("excerpt.")) {
+                    outputText =
+                      planHtml(result.revision.localizedExcerpt, "excerpt").segments.find(
+                        (segment) => segment.id === segmentId,
+                      )?.text ?? null;
+                  } else if (segmentId.startsWith("body.")) {
+                    outputText =
+                      planHtml(result.revision.localizedContent, "body").segments.find(
+                        (segment) => segment.id === segmentId,
+                      )?.text ?? null;
+                  }
+                }
+                const clip = (value) =>
+                  typeof value === "string" && value.length > 320
+                    ? value.slice(0, 317) + "..."
+                    : value;
+                return {
+                  code: issue.code,
+                  segmentId,
+                  message: issue.message,
+                  sourceText: clip(sourceText),
+                  outputText: clip(outputText),
+                };
+              }) ?? [],
         };
       }
       summary.push({ id, locales });
