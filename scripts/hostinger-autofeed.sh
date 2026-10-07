@@ -7,6 +7,13 @@ DATA_DIR="$ROOT/../../data/localization"
 LOG_FILE="$DATA_DIR/autofeed.log"
 ENDPOINT="${APEX_AUTOFEEED_URL:-https://apexnewsindia.com/api/internal/autofeed}"
 
+if [ "${1:-}" = "--retry-failed" ]; then
+  ENDPOINT="${ENDPOINT}?retryFailed=true"
+elif [ -n "${1:-}" ]; then
+  printf '%s\n' "Usage: $0 [--retry-failed]" >&2
+  exit 2
+fi
+
 mkdir -p "$DATA_DIR"
 
 if [ ! -f "$CONFIG_ENV" ]; then
