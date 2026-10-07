@@ -72,6 +72,44 @@ function object(v: unknown): Record<string, unknown> {
     ? (v as Record<string, unknown>)
     : {};
 }
+
+const transientStatuses = new Set([500, 502, 503, 504]);
+
+async function sleep(ms: number, signal: AbortSignal) {
+  if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+  await new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(resolve, ms);
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(new DOMException("Aborted", "AbortError"));
+    };
+    signal.addEventListener("abort", onAbort, { once: true });
+    setTimeout(() => signal.removeEventListener("abort", onAbort), ms + 10);
+  });
+}
+
+async function fetchWithTransientRetry(
+  fetcher: typeof fetch,
+  input: string,
+  init: RequestInit & { signal: AbortSignal },
+): Promise<Response> {
+  const delays = [1500, 3500];
+  let response: Response | undefined;
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    response = await fetcher(input, init);
+    if (!transientStatuses.has(response.status) || attempt === 2) return response;
+
+    try {
+      await response.body?.cancel();
+    } catch {
+      // Best effort only; the retry decision is based on HTTP status.
+    }
+    await sleep(delays[attempt] ?? 3500, init.signal);
+  }
+
+  return response!;
+}
 export class GeminiTranslationProvider implements TranslationProvider {
   readonly name = "gemini";
   readonly model: string;
@@ -120,7 +158,8 @@ export class GeminiTranslationProvider implements TranslationProvider {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
-      const result = await this.fetcher(
+      const result = await fetchWithTransientRetry(
+        this.fetcher,
         `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`,
         {
           method: "POST",
@@ -346,7 +385,8 @@ export class GeminiTranslationProvider implements TranslationProvider {
       "meaning",
     ]);
     try {
-      const result = await this.fetcher(
+      const result = await fetchWithTransientRetry(
+        this.fetcher,
         `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`,
         {
           method: "POST",
