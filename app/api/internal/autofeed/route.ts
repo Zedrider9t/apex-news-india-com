@@ -5,6 +5,7 @@ import { observeSource, localizeStory } from "@/lib/localization/engine";
 import { readPublicSource } from "@/lib/localization/source";
 import { createTranslationProvider } from "@/lib/localization/providers";
 import { fetchSourceStories } from "@/lib/wordpress/client";
+import { makePlan, planHtml } from "@/lib/localization/html";
 import type { TranslationLocale } from "@/lib/localization/types";
 
 export const dynamic = "force-dynamic";
@@ -76,17 +77,40 @@ export async function POST(request: Request) {
           verifySource: () => readPublicSource(id),
           retryFailed,
         });
+        const revision = result.revision;
+        const sourcePlan = makePlan(canonicalSource.story);
+        const sourceById = new Map(
+          sourcePlan.segments.map((segment) => [segment.id, segment.text]),
+        );
+        const localizedBodyById = new Map(
+          revision
+            ? planHtml(revision.localizedContent).segments.map((segment) => [
+                segment.id,
+                segment.text,
+              ])
+            : [],
+        );
+        const errorIssues =
+          revision?.validation?.issues
+            ?.filter((issue) => issue.severity === "error")
+            .slice(0, 10) ?? [];
+
         locales[locale] = {
           result: result.kind,
-          revision: result.revision?.revisionId ?? null,
-          validationPassed: result.revision?.validation?.passed ?? null,
-          editorial: result.revision?.editorialStatus ?? null,
-          publish: result.revision?.publishStatus ?? null,
-          failure: result.revision?.failure ?? null,
-          validationIssues:
-            result.revision?.validation?.issues
-              ?.filter((issue) => issue.severity === "error")
-              .slice(0, 10) ?? [],
+          revision: revision?.revisionId ?? null,
+          validationPassed: revision?.validation?.passed ?? null,
+          editorial: revision?.editorialStatus ?? null,
+          publish: revision?.publishStatus ?? null,
+          failure: revision?.failure ?? null,
+          validationIssues: errorIssues.map((issue) => ({
+            ...issue,
+            sourceText: issue.segmentId
+              ? (sourceById.get(issue.segmentId) ?? "").slice(0, 500)
+              : "",
+            outputText: issue.segmentId?.startsWith("body.")
+              ? (localizedBodyById.get(issue.segmentId) ?? "").slice(0, 500)
+              : "",
+          })),
         };
       }
 
