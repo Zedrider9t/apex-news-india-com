@@ -7,12 +7,31 @@ DATA_DIR="$ROOT/../../data/localization"
 LOG_FILE="$DATA_DIR/autofeed.log"
 ENDPOINT="${APEX_AUTOFEEED_URL:-https://apexnewsindia.com/api/internal/autofeed}"
 
-if [ "${1:-}" = "--retry-failed" ]; then
-  ENDPOINT="${ENDPOINT}?retryFailed=true"
-elif [ -n "${1:-}" ]; then
-  printf '%s\n' "Usage: $0 [--retry-failed]" >&2
-  exit 2
-fi
+case "${1:-}" in
+  "")
+    ;;
+  --retry-failed)
+    ENDPOINT="${ENDPOINT}?retryFailed=true"
+    ;;
+  --retry-id)
+    ID="${2:-}"
+    LOCALE="${3:-}"
+    case "$ID" in
+      ''|*[!0-9]*) printf '%s\n' "Usage: $0 --retry-id STORY_ID [en|roman]" >&2; exit 2 ;;
+    esac
+    ENDPOINT="${ENDPOINT}?retryFailed=true&id=${ID}"
+    if [ -n "$LOCALE" ]; then
+      case "$LOCALE" in
+        en|roman) ENDPOINT="${ENDPOINT}&locale=${LOCALE}" ;;
+        *) printf '%s\n' "Usage: $0 --retry-id STORY_ID [en|roman]" >&2; exit 2 ;;
+      esac
+    fi
+    ;;
+  *)
+    printf '%s\n' "Usage: $0 [--retry-failed | --retry-id STORY_ID [en|roman]]" >&2
+    exit 2
+    ;;
+esac
 
 mkdir -p "$DATA_DIR"
 
