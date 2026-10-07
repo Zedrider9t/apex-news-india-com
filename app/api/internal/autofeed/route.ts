@@ -26,6 +26,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
   try {
+    const retryFailed = new URL(request.url).searchParams.get("retryFailed") === "true";
     const latest = await fetchSourceStories({ limit: 6 });
     if (!latest.ok)
       return NextResponse.json(
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
       for (const locale of ["en", "roman"] as const) {
         const result = await localizeStory(repo, id, locale, provider, {
           verifySource: () => readPublicSource(id),
-          retryFailed: false,
+          retryFailed,
         });
         locales[locale] = {
           result: result.kind,
@@ -69,6 +70,7 @@ export async function POST(request: Request) {
       ok: true,
       discovered: latest.stories.map((story) => story.sourcePostId),
       processed,
+      retryFailed,
       note: "Automatic intake never auto-approves editorial content.",
     });
   } catch (error) {
