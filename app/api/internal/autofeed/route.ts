@@ -26,20 +26,38 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
   try {
-    const retryFailed = new URL(request.url).searchParams.get("retryFailed") === "true";
-    const latest = await fetchSourceStories({ limit: 6 });
-    if (!latest.ok)
-      return NextResponse.json(
-        { ok: false, error: `Source feed unavailable: ${latest.reason}` },
-        { status: 502 },
-      );
+    const url = new URL(request.url);
+    const retryFailed = url.searchParams.get("retryFailed") === "true";
+    const requestedId = Number(url.searchParams.get("id") ?? "");
+    const requestedLocale = url.searchParams.get("locale");
+    const localeFilter =
+      requestedLocale === "en" || requestedLocale === "roman"
+        ? requestedLocale
+        : null;
+
+    if (url.searchParams.has("id") && (!Number.isSafeInteger(requestedId) || requestedId < 1))
+      return NextResponse.json({ ok: false, error: "Invalid story id" }, { status: 400 });
+    if (requestedLocale && !localeFilter)
+      return NextResponse.json({ ok: false, error: "Invalid locale" }, { status: 400 });
+
+    const discoveredIds: number[] = [];
+    if (Number.isSafeInteger(requestedId) && requestedId > 0) {
+      discoveredIds.push(requestedId);
+    } else {
+      const latest = await fetchSourceStories({ limit: 6 });
+      if (!latest.ok)
+        return NextResponse.json(
+          { ok: false, error: `Source feed unavailable: ${latest.reason}` },
+          { status: 502 },
+        );
+      discoveredIds.push(...latest.stories.map((story) => story.sourcePostId));
+    }
 
     const repo = new JsonLocalizationRepository();
     const provider = createTranslationProvider();
     const processed: Array<Record<string, unknown>> = [];
 
-    for (const discovered of [...latest.stories].reverse()) {
-      const id = discovered.sourcePostId;
+    for (const id of [...discoveredIds].reverse()) {
       const canonicalSource = await readPublicSource(id);
       if (canonicalSource.kind !== "active") {
         processed.push({ id, skipped: true, reason: canonicalSource.kind });
@@ -48,8 +66,9 @@ export async function POST(request: Request) {
 
       await observeSource(repo, id, canonicalSource);
       const locales: Record<string, unknown> = {};
+      const targetLocales = localeFilter ? [localeFilter] : (["en", "roman"] as const);
 
-      for (const locale of ["en", "roman"] as const) {
+      for (const locale of targetLocales) {
         const result = await localizeStory(repo, id, locale, provider, {
           verifySource: () => readPublicSource(id),
           retryFailed,
@@ -68,9 +87,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       ok: true,
-      discovered: latest.stories.map((story) => story.sourcePostId),
+      discovered: discoveredIds,
       processed,
       retryFailed,
+      locale: localeFilter,
       note: "Automatic intake never auto-approves editorial content.",
     });
   } catch (error) {
