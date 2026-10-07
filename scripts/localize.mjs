@@ -132,6 +132,14 @@ try {
           validationPassed: result.revision?.validation?.passed ?? null,
           editorial: result.revision?.editorialStatus ?? null,
           publish: result.revision?.publishStatus ?? null,
+          validationIssues:
+            result.revision?.validation?.issues
+              ?.filter((issue) => issue.severity === "error")
+              .map((issue) => ({
+                code: issue.code,
+                segmentId: issue.segmentId ?? null,
+                message: issue.message,
+              })) ?? [],
         };
       }
       summary.push({ id, locales });
