@@ -82,6 +82,11 @@ export async function POST(request: Request) {
           validationPassed: result.revision?.validation?.passed ?? null,
           editorial: result.revision?.editorialStatus ?? null,
           publish: result.revision?.publishStatus ?? null,
+          failure: result.revision?.failure ?? null,
+          validationIssues:
+            result.revision?.validation?.issues
+              ?.filter((issue) => issue.severity === "error")
+              .slice(0, 10) ?? [],
         };
       }
 
