@@ -32,6 +32,13 @@ export async function POST(request: Request) {
     const retryFailed = url.searchParams.get("retryFailed") === "true";
     const requestedId = Number(url.searchParams.get("id") ?? "");
     const requestedLocale = url.searchParams.get("locale");
+    const maxWorkRaw = url.searchParams.get("maxWork");
+    const maxWork =
+      maxWorkRaw === null
+        ? null
+        : Number.isSafeInteger(Number(maxWorkRaw)) && Number(maxWorkRaw) >= 1 && Number(maxWorkRaw) <= 6
+          ? Number(maxWorkRaw)
+          : NaN;
     const localeFilter =
       requestedLocale === "en" || requestedLocale === "roman"
         ? requestedLocale
@@ -41,6 +48,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "Invalid story id" }, { status: 400 });
     if (requestedLocale && !localeFilter)
       return NextResponse.json({ ok: false, error: "Invalid locale" }, { status: 400 });
+    if (maxWorkRaw !== null && !Number.isFinite(maxWork))
+      return NextResponse.json({ ok: false, error: "Invalid maxWork" }, { status: 400 });
 
     const discoveredIds: number[] = [];
     if (Number.isSafeInteger(requestedId) && requestedId > 0) {
@@ -58,8 +67,9 @@ export async function POST(request: Request) {
     const repo = new JsonLocalizationRepository();
     const provider = createTranslationProvider();
     const processed: Array<Record<string, unknown>> = [];
+    let workPerformed = 0;
 
-    for (const id of [...discoveredIds].reverse()) {
+    storyLoop: for (const id of [...discoveredIds].reverse()) {
       const canonicalSource = await readPublicSource(id);
       if (canonicalSource.kind !== "active") {
         processed.push({ id, skipped: true, reason: canonicalSource.kind });
@@ -112,6 +122,14 @@ export async function POST(request: Request) {
               : "",
           })),
         };
+
+        if (["generated", "validation_failed", "failed"].includes(result.kind))
+          workPerformed += 1;
+
+        if (maxWork !== null && workPerformed >= maxWork) {
+          processed.push({ id, locales });
+          break storyLoop;
+        }
       }
 
       processed.push({ id, locales });
@@ -123,6 +141,8 @@ export async function POST(request: Request) {
       processed,
       retryFailed,
       locale: localeFilter,
+      maxWork,
+      workPerformed,
       note: "Automatic intake never auto-approves editorial content.",
     });
   } catch (error) {
