@@ -104,7 +104,22 @@ try {
     const summary = [];
     for (const story of [...latest.stories].reverse()) {
       const id = story.sourcePostId;
-      await observeSource(repo, id, { kind: "active", story });
+
+      // Use the single-post endpoint as the canonical snapshot for both the
+      // initial observation and the post-generation verification. WordPress
+      // collection and single-post responses can differ in embedded metadata
+      // even when the article itself has not changed.
+      const canonicalSource = await readPublicSource(id);
+      if (canonicalSource.kind !== "active") {
+        summary.push({
+          id,
+          skipped: true,
+          reason: canonicalSource.kind,
+        });
+        continue;
+      }
+      await observeSource(repo, id, canonicalSource);
+
       const locales = {};
       for (const locale of ["en", "roman"]) {
         const result = await localizeStory(repo, id, locale, provider, {
