@@ -69,7 +69,9 @@ const replace = (s, locale) => {
       ? [
           ["प्रधानमंत्री नरेंद्र मोदी", "Prime Minister Narendra Modi"],
           ["17 सितंबर 2026", "17 September 2026"],
+          ["सितंबर", "September"],
           ["2 करोड़ रुपये", "2 crore rupees"],
+          ["करोड़ रुपये", "crore rupees"],
           ["दिल्ली", "Delhi"],
           ["सरकार", "government"],
           ["भारत", "India"],
@@ -89,7 +91,9 @@ const replace = (s, locale) => {
       : [
           ["प्रधानमंत्री नरेंद्र मोदी", "Pradhanmantri Narendra Modi"],
           ["17 सितंबर 2026", "17 September 2026"],
+          ["सितंबर", "September"],
           ["2 करोड़ रुपये", "2 crore rupaye"],
+          ["करोड़ रुपये", "crore rupaye"],
           ["दिल्ली", "Delhi"],
           ["सरकार", "sarkar"],
           ["भारत", "Bharat"],
