@@ -1,7 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { JsonLocalizationRepository } from "@/lib/localization/repository";
-import { observeSource, localizeStory } from "@/lib/localization/engine";
+import { observeSource, localizeStory, autoApproveStory } from "@/lib/localization/engine";
 import { readPublicSource } from "@/lib/localization/source";
 import { createTranslationProvider } from "@/lib/localization/providers";
 import { fetchSourceStories } from "@/lib/wordpress/client";
@@ -145,12 +145,14 @@ export async function POST(request: Request) {
           workPerformed += 1;
 
         if (maxWork !== null && workPerformed >= maxWork) {
-          processed.push({ id, locales });
+          const approval = await autoApproveStory(repo, id);
+          processed.push({ id, locales, approval });
           break storyLoop;
         }
       }
 
-      processed.push({ id, locales });
+      const approval = await autoApproveStory(repo, id);
+      processed.push({ id, locales, approval });
     }
 
     return NextResponse.json({
