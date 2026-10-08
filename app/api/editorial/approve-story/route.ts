@@ -65,7 +65,15 @@ export async function POST(request: Request) {
     );
 
     if (!contentType.includes("application/json")) {
-      const target = new URL("/editorial", request.url);
+      const forwardedHost =
+        request.headers.get("x-forwarded-host") ??
+        request.headers.get("host") ??
+        "apexnewsindia.com";
+      const forwardedProto =
+        request.headers.get("x-forwarded-proto") ?? "https";
+      const target = new URL(
+        `${forwardedProto}://${forwardedHost}/editorial`,
+      );
       target.searchParams.set("approved", String(id));
       return NextResponse.redirect(target, 303);
     }
