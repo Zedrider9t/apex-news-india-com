@@ -707,3 +707,90 @@ export async function approveStory(
     };
   });
 }
+
+
+/**
+ * Strict automatic approval for low-risk stories only.
+ * Both current language revisions must be generated, validated and based on
+ * the current source. Any warning beyond the generic semantic-review notice
+ * keeps the story in the human editorial queue.
+ */
+export async function autoApproveStory(
+  repo: LocalizationRepository,
+  id: number,
+) {
+  return repo.transact((db) => {
+    const record = db.stories[String(id)];
+    if (
+      !record ||
+      record.state !== "active" ||
+      record.availability !== "available"
+    )
+      return { kind: "not_eligible" as const, reason: "source_unavailable" };
+
+    const revisions = (["en", "roman"] as const).map((locale) => {
+      const revisionId = record.current[locale];
+      return revisionId
+        ? record.revisions.find((item) => item.revisionId === revisionId)
+        : undefined;
+    });
+
+    if (revisions.some((revision) => !revision))
+      return { kind: "not_eligible" as const, reason: "languages_incomplete" };
+
+    const current = revisions as [LocalizedArticle, LocalizedArticle];
+    const allowedWarningCodes = new Set(["semantic_review"]);
+
+    for (const revision of current) {
+      if (
+        revision.translationStatus !== "generated" ||
+        !revision.validation.passed ||
+        revision.sourceRevisionHash !== record.currentSourceHash ||
+        revision.sourceDeleted ||
+        revision.sourceUnpublished ||
+        revision.publishStatus === "withdrawn"
+      )
+        return { kind: "not_eligible" as const, reason: "revision_not_current" };
+
+      const blockingIssue = revision.validation.issues.find(
+        (issue) =>
+          issue.severity === "error" ||
+          (issue.severity === "warning" && !allowedWarningCodes.has(issue.code)),
+      );
+      if (blockingIssue)
+        return {
+          kind: "not_eligible" as const,
+          reason: blockingIssue.code,
+        };
+    }
+
+    const stamp = now();
+    for (const revision of current) {
+      revision.editorialStatus = "auto_approved";
+      revision.publishStatus = "ready";
+      record.events.push({
+        revisionId: revision.revisionId,
+        action: "story_auto_approved",
+        actor: "Apex News India Auto Review",
+        note:
+          "Auto-approved after both language revisions passed deterministic validation and factual verification with no blocking warnings.",
+        at: stamp,
+      });
+    }
+
+    return {
+      kind: "auto_approved" as const,
+      sourcePostId: id,
+      revisions: Object.fromEntries(
+        current.map((revision) => [
+          revision.locale,
+          {
+            revisionId: revision.revisionId,
+            editorialStatus: revision.editorialStatus,
+            publishStatus: revision.publishStatus,
+          },
+        ]),
+      ),
+    };
+  });
+}
