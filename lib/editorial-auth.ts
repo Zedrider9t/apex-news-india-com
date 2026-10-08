@@ -5,10 +5,29 @@ function safeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
+type EditorialCredential = {
+  user: string;
+  password: string;
+};
+
+function configuredCredentials(): EditorialCredential[] {
+  return [
+    {
+      user: process.env.APEX_EDITORIAL_USER?.trim() ?? "",
+      password: process.env.APEX_EDITORIAL_PASSWORD ?? "",
+    },
+    {
+      user: process.env.APEX_EDITORIAL_ADMIN_USER?.trim() ?? "",
+      password: process.env.APEX_EDITORIAL_ADMIN_PASSWORD ?? "",
+    },
+  ].filter(
+    (credential) =>
+      credential.user.length >= 2 && credential.password.length >= 16,
+  );
+}
+
 export function editorialCredentialsConfigured(): boolean {
-  const user = process.env.APEX_EDITORIAL_USER?.trim() ?? "";
-  const password = process.env.APEX_EDITORIAL_PASSWORD ?? "";
-  return user.length >= 2 && password.length >= 16;
+  return configuredCredentials().length > 0;
 }
 
 export function editorialAuthorized(headers: Headers): boolean {
@@ -24,11 +43,10 @@ export function editorialAuthorized(headers: Headers): boolean {
     if (separator < 0) return false;
     const suppliedUser = decoded.slice(0, separator);
     const suppliedPassword = decoded.slice(separator + 1);
-    const expectedUser = process.env.APEX_EDITORIAL_USER?.trim() ?? "";
-    const expectedPassword = process.env.APEX_EDITORIAL_PASSWORD ?? "";
-    return (
-      safeEqual(suppliedUser, expectedUser) &&
-      safeEqual(suppliedPassword, expectedPassword)
+    return configuredCredentials().some(
+      (credential) =>
+        safeEqual(suppliedUser, credential.user) &&
+        safeEqual(suppliedPassword, credential.password),
     );
   } catch {
     return false;
