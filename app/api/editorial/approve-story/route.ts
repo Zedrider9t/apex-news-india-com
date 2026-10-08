@@ -46,7 +46,8 @@ export async function POST(request: Request) {
       typeof actorValue === "string" ? actorValue.trim() : "";
     const actor =
       process.env.NODE_ENV === "production"
-        ? (process.env.APEX_EDITORIAL_USER?.trim() ?? "")
+        ? (process.env.APEX_EDITORIAL_REVIEWER?.trim() ||
+          "Apex News India Editorial Desk")
         : submittedActor;
     const note = typeof noteValue === "string" ? noteValue.trim() : "";
 
