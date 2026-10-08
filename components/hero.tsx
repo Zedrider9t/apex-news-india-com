@@ -27,6 +27,13 @@ export function Hero({ slides: heroSlides }: { slides: ApexArticle[] }) {
   }, []);
   const hero = heroSlides[activeHero] ?? heroSlides[0];
   if (!hero) return null;
+  const titleLength = hero.title.trim().length;
+  const titleClass =
+    titleLength > 105
+      ? "hero-title hero-title-very-long"
+      : titleLength > 78
+        ? "hero-title hero-title-long"
+        : "hero-title";
   return (
     <div
       ref={heroRef}
@@ -54,7 +61,7 @@ export function Hero({ slides: heroSlides }: { slides: ApexArticle[] }) {
           <span /> {categoryLabel(hero.category).toUpperCase()}{" "}
           <span className="hero-category-rule" /> {t("THE NEXT CHAPTER")}{" "}
         </div>
-        <h1>{hero.title}</h1>
+        <h1 className={titleClass}>{hero.title}</h1>
         <p>{hero.excerpt}</p>
         <div className="hero-actions">
           <Link className="primary-button" href={hero.alternatePaths[locale]}>
