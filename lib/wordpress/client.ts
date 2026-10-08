@@ -112,7 +112,12 @@ async function request(path: string, options: FetchOptions): Promise<unknown> {
   throw new SourceError("network", "Public source request failed");
 }
 export async function fetchSourceStories(
-  options: FetchOptions & { postId?: number; limit?: number } = {},
+  options: FetchOptions & {
+    postId?: number;
+    limit?: number;
+    after?: string;
+    before?: string;
+  } = {},
 ): Promise<SourceResult> {
   try {
     if (
@@ -120,11 +125,21 @@ export async function fetchSourceStories(
       (!Number.isSafeInteger(options.postId) || options.postId < 1)
     )
       throw new SourceError("malformed", "Invalid post ID");
-    const limit = Math.max(1, Math.min(6, Math.floor(options.limit ?? 6)));
+    const limit = Math.max(1, Math.min(100, Math.floor(options.limit ?? 6)));
+    const params = new URLSearchParams({
+      per_page: String(limit),
+      _embed: "1",
+      status: "publish",
+      orderby: "date",
+      order: "desc",
+    });
+    if (options.after) params.set("after", options.after);
+    if (options.before) params.set("before", options.before);
+
     const raw = await request(
       options.postId
         ? `posts/${options.postId}?_embed=1`
-        : `posts?per_page=${limit}&_embed=1&status=publish&orderby=date&order=desc`,
+        : `posts?${params.toString()}`,
       options,
     );
     if (!options.postId && !Array.isArray(raw))
