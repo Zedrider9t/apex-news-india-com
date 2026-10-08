@@ -1,7 +1,7 @@
 "use client";
 import { useEdition } from "./edition-provider";
 import { LanguageSwitcher } from "./language-switcher";
-import Image from "next/image";
+import { EditorialImage as Image } from "./editorial-image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
