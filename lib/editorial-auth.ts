@@ -65,9 +65,25 @@ export function editorialChallenge(): Response {
 
 export function requestIsSameOrigin(request: Request): boolean {
   try {
+    const fetchSite = request.headers.get("sec-fetch-site");
+    if (fetchSite) return fetchSite === "same-origin";
+
     const origin = request.headers.get("origin");
     if (!origin) return true;
-    return new URL(origin).origin === new URL(request.url).origin;
+
+    const originUrl = new URL(origin);
+    const forwardedHost =
+      request.headers.get("x-forwarded-host") ??
+      request.headers.get("host") ??
+      new URL(request.url).host;
+    const forwardedProto =
+      request.headers.get("x-forwarded-proto") ??
+      new URL(request.url).protocol.replace(":", "");
+
+    return (
+      originUrl.host === forwardedHost &&
+      originUrl.protocol === forwardedProto + ":"
+    );
   } catch {
     return false;
   }
