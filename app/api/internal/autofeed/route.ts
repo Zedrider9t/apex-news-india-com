@@ -33,6 +33,15 @@ export async function POST(request: Request) {
     const requestedId = Number(url.searchParams.get("id") ?? "");
     const requestedLocale = url.searchParams.get("locale");
     const maxWorkRaw = url.searchParams.get("maxWork");
+    const daysRaw = url.searchParams.get("days");
+    const days =
+      daysRaw === null
+        ? null
+        : Number.isSafeInteger(Number(daysRaw)) &&
+            Number(daysRaw) >= 1 &&
+            Number(daysRaw) <= 31
+          ? Number(daysRaw)
+          : NaN;
     const maxWork =
       maxWorkRaw === null
         ? null
@@ -50,12 +59,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "Invalid locale" }, { status: 400 });
     if (maxWorkRaw !== null && !Number.isFinite(maxWork))
       return NextResponse.json({ ok: false, error: "Invalid maxWork" }, { status: 400 });
+    if (daysRaw !== null && !Number.isFinite(days))
+      return NextResponse.json({ ok: false, error: "Invalid days" }, { status: 400 });
 
     const discoveredIds: number[] = [];
     if (Number.isSafeInteger(requestedId) && requestedId > 0) {
       discoveredIds.push(requestedId);
     } else {
-      const latest = await fetchSourceStories({ limit: 6 });
+      const after =
+        days === null
+          ? undefined
+          : new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+      const latest = await fetchSourceStories({
+        limit: days === null ? 6 : 100,
+        after,
+      });
       if (!latest.ok)
         return NextResponse.json(
           { ok: false, error: `Source feed unavailable: ${latest.reason}` },
@@ -142,6 +160,7 @@ export async function POST(request: Request) {
       retryFailed,
       locale: localeFilter,
       maxWork,
+      days,
       workPerformed,
       note: "Automatic intake never auto-approves editorial content.",
     });
