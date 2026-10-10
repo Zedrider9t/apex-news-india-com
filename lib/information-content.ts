@@ -40,9 +40,34 @@ export type VerifiedContactChannel = {
   label: string;
   href: `mailto:${string}` | `tel:${string}` | `https://${string}`;
 };
-// Publish a channel only after the newsroom confirms it. No public contact method
-// was present in the project when these pages were authored.
-export const verifiedContactChannels: VerifiedContactChannel[] = [];
+// Public newsroom contact channels verified for store and support use.
+export const verifiedContactChannels: VerifiedContactChannel[] = [
+  {
+    purpose: "general",
+    label: "Email Apex News India",
+    href: "mailto:admin@apexnewsindia.com",
+  },
+  {
+    purpose: "editorial",
+    label: "Email the editorial team",
+    href: "mailto:admin@apexnewsindia.com",
+  },
+  {
+    purpose: "corrections",
+    label: "Send a correction request",
+    href: "mailto:admin@apexnewsindia.com",
+  },
+  {
+    purpose: "privacy",
+    label: "Send a privacy request",
+    href: "mailto:admin@apexnewsindia.com",
+  },
+  {
+    purpose: "support",
+    label: "Contact app support",
+    href: "mailto:admin@apexnewsindia.com",
+  },
+];
 
 export interface InformationSection {
   heading: string;
@@ -236,12 +261,12 @@ export const informationContent: Localized<
       title: "Contact Apex",
       description:
         "Find the right route for general, editorial, corrections, privacy and app support enquiries at Apex News India.",
-      deck: "Send the right question to the right team. Contact channels appear here once they have been verified by the newsroom.",
+      deck: "Apex News India is published by Varchaswaa International. For newsroom, editorial, corrections, privacy or app support enquiries, contact us using the verified details below.",
       sections: [
         {
           heading: "General enquiries",
           paragraphs: [
-            "Questions about Apex News India, the website or the mobile app can be directed through a verified general contact channel when one is published.",
+            "Apex News India is published by Varchaswaa International. General enquiries about Apex News India, the website or the mobile app can be sent to admin@apexnewsindia.com.",
           ],
         },
         {
@@ -515,12 +540,12 @@ export const informationContent: Localized<
       title: "Apex se sampark",
       description:
         "Apex News India se aam sawaal, editorial baat, correction, privacy request ya app support ke liye sampark ki jankari.",
-      deck: "Sahi sawaal sahi team tak pahunchayein. Newsroom se tasdeeq hone ke baad contact channels yahan dikhaye jaayenge.",
+      deck: "Apex News India ko Varchaswaa International publish karta hai. Newsroom, editorial, correction, privacy ya app support ke liye neeche diye gaye verified contact ka istemal karein.",
       sections: [
         {
           heading: "Aam sawaal",
           paragraphs: [
-            "Apex News India, website ya mobile app se jude aam sawaalon ke liye tasdeeq-shuda general contact channel publish hone par uska istemal karein.",
+            "Apex News India ko Varchaswaa International publish karta hai. Apex News India, website ya mobile app se jude aam sawaal admin@apexnewsindia.com par bhejein.",
           ],
         },
         {
