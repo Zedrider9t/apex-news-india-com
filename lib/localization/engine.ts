@@ -4,6 +4,7 @@ import { makeSourceRevision } from "./revisions";
 import { makePlan, protectSegments, restoreSegments, renderHtml } from "./html";
 import { validateTranslation, VALIDATOR_VERSION } from "./validation";
 import { PROMPT_VERSION, TranslationProviderError } from "./provider";
+import { assessAutoApproval } from "./auto-review";
 import type {
   LocalizationRepository,
   SourceObservation,
@@ -739,6 +740,17 @@ export async function autoApproveStory(
       return { kind: "not_eligible" as const, reason: "languages_incomplete" };
 
     const current = revisions as [LocalizedArticle, LocalizedArticle];
+
+    if (current.some((revision) => revision.editorialStatus === "manually_approved"))
+      return { kind: "not_eligible" as const, reason: "manual_approval_retained" };
+
+    const sourceDecision = assessAutoApproval(latestSource(record).story);
+    if (!sourceDecision.eligible)
+      return {
+        kind: "not_eligible" as const,
+        reason: sourceDecision.reason,
+      };
+
     const allowedWarningCodes = new Set(["semantic_review"]);
 
     for (const revision of current) {
