@@ -30,6 +30,9 @@ const { TranslationProviderError, PROMPT_VERSION } = loadTs(
 const { createTranslationProvider } = loadTs(
   "lib/localization/providers/index.ts",
 );
+const { assessAutoApproval } = loadTs(
+  "lib/localization/auto-review.ts",
+);
 let count = 0;
 function check(condition, message) {
   assert.ok(condition, message);
@@ -62,6 +65,38 @@ const source = {
   tags: [],
   contentText: ["प्रधानमंत्री ने कहा।"],
 };
+const safeEntertainmentSource = {
+  ...structuredClone(source),
+  titleHindi: "नई फिल्म का ट्रेलर जारी",
+  excerptText: "फिल्म का नया ट्रेलर दर्शकों के लिए जारी हुआ।",
+  contentText: ["निर्माताओं ने फिल्म का नया ट्रेलर जारी किया।"],
+  warnings: [],
+  categories: [
+    {
+      id: 99,
+      name: "मनोरंजन",
+      slug: "entertainment",
+      taxonomy: "category",
+      sourceUrl: null,
+    },
+  ],
+};
+check(
+  assessAutoApproval(safeEntertainmentSource).eligible,
+  "clean entertainment story may enter low-risk auto review",
+);
+check(
+  !assessAutoApproval({
+    ...safeEntertainmentSource,
+    titleHindi: "अदालत में फिल्म विवाद पर याचिका",
+  }).eligible,
+  "sensitive legal story remains in human review",
+);
+check(
+  !assessAutoApproval(source).eligible,
+  "non-whitelisted political/general category remains in human review",
+);
+
 const active = (s) => async () => ({ kind: "active", story: s });
 const replace = (s, locale) => {
   const pairs =
