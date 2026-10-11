@@ -106,7 +106,7 @@ function readyRevision(
     !revision ||
     revision.translationStatus !== "generated" ||
     !revision.validation.passed ||
-    revision.editorialStatus !== "manually_approved" ||
+    !["manually_approved", "auto_approved"].includes(revision.editorialStatus) ||
     revision.publishStatus !== "ready" ||
     revision.sourceDeleted ||
     revision.sourceUnpublished ||
