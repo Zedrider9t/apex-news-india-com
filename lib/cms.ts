@@ -196,9 +196,9 @@ export async function getReadyLocalizedArticles(locale: Locale): Promise<ApexArt
     );
 }
 
-// The public homepage remains on the frozen demo dataset until production
-// persistence and rollout are complete. Article lookup, however, can serve
-// manually-approved localized pilot stories from the local repository.
+// Public article surfaces serve localized revisions only after the editorial
+// gate marks them ready, either by manual approval or the conservative
+// low-risk auto-review path.
 export async function getReadyLocalizedArticle(
   locale: Locale,
   idOrSlug: string,
@@ -227,7 +227,7 @@ export async function getHomepageArticles(
 ): Promise<ApexArticle[]> {
   const localized = await getReadyLocalizedArticles(locale);
 
-  // Once we have at least three editor-approved stories, the newsroom can run
+  // Once we have at least three ready approved stories, the newsroom can run
   // its core article surfaces without demo headlines. Non-article preview
   // modules (such as Shorts/Live placeholders) remain independently gated.
   if (localized.length >= 3)
