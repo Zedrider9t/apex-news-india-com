@@ -155,3 +155,21 @@ npm run check:localization
 ```
 
 Review `/translation-preview` and `/translation-preview/{postId}/en` or `/roman`. These are read-only, noindex local review pages, excluded from the sitemap. Generated records remain drafts requiring bilingual editorial review. No deploy, publish, automatic sync schedule, DNS change, or WordPress write has been performed.
+
+## Realtime WordPress sync webhook
+
+Production can receive signed realtime events from the custom **Apex News Sync** plugin installed on `apexnewsindia.in`.
+
+Endpoint:
+
+```text
+POST /api/internal/wp-webhook
+```
+
+Required production environment variable:
+
+```text
+APEX_WP_WEBHOOK_SECRET=<same 32+ character signing secret configured in WordPress>
+```
+
+The plugin sends only the WordPress post ID and event metadata. The .com backend re-fetches the canonical Hindi post from the public WordPress REST API before localization. Publish/update events run the existing EN + Roman localization, validation, factual verification, and hybrid approval flow. Signed unpublish/delete events withdraw the corresponding localized revisions. The existing GitHub Actions autofeed remains a reconciliation fallback.
