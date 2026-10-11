@@ -34,6 +34,13 @@ export async function POST(request: Request) {
     const requestedLocale = url.searchParams.get("locale");
     const maxWorkRaw = url.searchParams.get("maxWork");
     const daysRaw = url.searchParams.get("days");
+    const sinceRaw = url.searchParams.get("since");
+    const since =
+      sinceRaw === null
+        ? null
+        : /^\d{4}-\d{2}-\d{2}$/.test(sinceRaw)
+          ? sinceRaw
+          : "";
     const days =
       daysRaw === null
         ? null
@@ -61,15 +68,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "Invalid maxWork" }, { status: 400 });
     if (daysRaw !== null && !Number.isFinite(days))
       return NextResponse.json({ ok: false, error: "Invalid days" }, { status: 400 });
+    if (sinceRaw !== null && !since)
+      return NextResponse.json({ ok: false, error: "Invalid since date" }, { status: 400 });
 
     const discoveredIds: number[] = [];
     if (Number.isSafeInteger(requestedId) && requestedId > 0) {
       discoveredIds.push(requestedId);
     } else {
       const after =
-        days === null
-          ? undefined
-          : new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+        since !== null
+          ? new Date(`${since}T00:00:00+05:30`).toISOString()
+          : days === null
+            ? undefined
+            : new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
       const latest = await fetchSourceStories({
         limit: days === null ? 6 : 100,
         after,
@@ -163,6 +174,7 @@ export async function POST(request: Request) {
       locale: localeFilter,
       maxWork,
       days,
+      since,
       workPerformed,
       note: "Low-risk clean stories may be auto-approved; sensitive or flagged stories remain in human review.",
     });
