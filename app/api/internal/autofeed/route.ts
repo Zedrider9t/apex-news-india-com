@@ -164,7 +164,7 @@ export async function POST(request: Request) {
       maxWork,
       days,
       workPerformed,
-      note: "Automatic intake never auto-approves editorial content.",
+      note: "Low-risk clean stories may be auto-approved; sensitive or flagged stories remain in human review.",
     });
   } catch (error) {
     return NextResponse.json(
