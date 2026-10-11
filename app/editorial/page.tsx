@@ -43,7 +43,7 @@ export default async function EditorialPage() {
           <p className="editorial-kicker">APEX NEWS INDIA</p>
           <h1>Editorial Review</h1>
           <p className="editorial-subtitle">
-            Human approval gate for English and Roman Hindi localization.
+            Sensitive, flagged, or incomplete English and Roman Hindi stories require human approval.
           </p>
         </div>
         <div className="editorial-count">{queue.length} pending</div>
