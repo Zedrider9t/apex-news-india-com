@@ -98,7 +98,8 @@ export async function POST(request: Request) {
     const processed: Array<Record<string, unknown>> = [];
     let workPerformed = 0;
 
-    storyLoop: for (const id of [...discoveredIds].reverse()) {
+    // WordPress returns newest posts first; preserve that order so current news is prioritized.
+    storyLoop: for (const id of discoveredIds) {
       const canonicalSource = await readPublicSource(id);
       if (canonicalSource.kind !== "active") {
         processed.push({ id, skipped: true, reason: canonicalSource.kind });
