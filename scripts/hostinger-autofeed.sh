@@ -5,13 +5,13 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 CONFIG_ENV="$ROOT/../config/.env"
 DATA_DIR="$ROOT/../../data/localization"
 LOG_FILE="$DATA_DIR/autofeed.log"
-ENDPOINT="${APEX_AUTOFEEED_URL:-https://apexnewsindia.com/api/internal/autofeed}"
+ENDPOINT="${APEX_AUTOFEEED_URL:-https://apexnewsindia.com/api/internal/autofeed?since=2026-10-08&maxWork=2}"
 
 case "${1:-}" in
   "")
     ;;
   --retry-failed)
-    ENDPOINT="${ENDPOINT}?retryFailed=true"
+    ENDPOINT="${ENDPOINT%%\?*}?retryFailed=true"
     ;;
   --retry-id)
     ID="${2:-}"
@@ -19,7 +19,7 @@ case "${1:-}" in
     case "$ID" in
       ''|*[!0-9]*) printf '%s\n' "Usage: $0 --retry-id STORY_ID [en|roman]" >&2; exit 2 ;;
     esac
-    ENDPOINT="${ENDPOINT}?retryFailed=true&id=${ID}"
+    ENDPOINT="${ENDPOINT%%\?*}?retryFailed=true&id=${ID}"
     if [ -n "$LOCALE" ]; then
       case "$LOCALE" in
         en|roman) ENDPOINT="${ENDPOINT}&locale=${LOCALE}" ;;
