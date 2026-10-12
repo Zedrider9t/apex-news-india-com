@@ -176,7 +176,7 @@ export async function POST(request: Request) {
       days,
       since,
       workPerformed,
-      note: "Low-risk clean stories may be auto-approved; sensitive or flagged stories remain in human review.",
+      note: "All active apexnewsindia.in stories auto-approve after both English and Roman Hindi revisions are generated and pass validation/factual verification.",
     });
   } catch (error) {
     return NextResponse.json(
