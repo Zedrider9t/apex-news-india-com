@@ -4,7 +4,6 @@ import { makeSourceRevision } from "./revisions";
 import { makePlan, protectSegments, restoreSegments, renderHtml } from "./html";
 import { validateTranslation, VALIDATOR_VERSION } from "./validation";
 import { PROMPT_VERSION, TranslationProviderError } from "./provider";
-import { assessAutoApproval } from "./auto-review";
 import type {
   LocalizationRepository,
   SourceObservation,
@@ -711,10 +710,10 @@ export async function approveStory(
 
 
 /**
- * Strict automatic approval for low-risk stories only.
- * Both current language revisions must be generated, validated and based on
- * the current source. Any warning beyond the generic semantic-review notice
- * keeps the story in the human editorial queue.
+ * Automatic approval for all authoritative apexnewsindia.in source stories.
+ * Approval still requires both current language revisions to be generated,
+ * validation-passed, current, and attached to an active source. Failed or
+ * incomplete translations never publish automatically.
  */
 export async function autoApproveStory(
   repo: LocalizationRepository,
@@ -744,15 +743,6 @@ export async function autoApproveStory(
     if (current.some((revision) => revision.editorialStatus === "manually_approved"))
       return { kind: "not_eligible" as const, reason: "manual_approval_retained" };
 
-    const sourceDecision = assessAutoApproval(latestSource(record).story);
-    if (!sourceDecision.eligible)
-      return {
-        kind: "not_eligible" as const,
-        reason: sourceDecision.reason,
-      };
-
-    const allowedWarningCodes = new Set(["semantic_review"]);
-
     for (const revision of current) {
       if (
         revision.translationStatus !== "generated" ||
@@ -763,17 +753,6 @@ export async function autoApproveStory(
         revision.publishStatus === "withdrawn"
       )
         return { kind: "not_eligible" as const, reason: "revision_not_current" };
-
-      const blockingIssue = revision.validation.issues.find(
-        (issue) =>
-          issue.severity === "error" ||
-          (issue.severity === "warning" && !allowedWarningCodes.has(issue.code)),
-      );
-      if (blockingIssue)
-        return {
-          kind: "not_eligible" as const,
-          reason: blockingIssue.code,
-        };
     }
 
     const stamp = now();
@@ -783,9 +762,9 @@ export async function autoApproveStory(
       record.events.push({
         revisionId: revision.revisionId,
         action: "story_auto_approved",
-        actor: "Apex News India Auto Review",
+        actor: "Apex News India Auto Publish",
         note:
-          "Auto-approved after both language revisions passed deterministic validation and factual verification with no blocking warnings.",
+          "Auto-approved because apexnewsindia.in is the authoritative source and both localized revisions passed translation validation and factual verification.",
         at: stamp,
       });
     }
