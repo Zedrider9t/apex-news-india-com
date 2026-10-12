@@ -5,10 +5,13 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 CONFIG_ENV="$ROOT/../config/.env"
 DATA_DIR="$ROOT/../../data/localization"
 LOG_FILE="$DATA_DIR/autofeed.log"
-ENDPOINT="${APEX_AUTOFEEED_URL:-https://apexnewsindia.com/api/internal/autofeed?since=2026-10-08&maxWork=2}"
+ENDPOINT="${APEX_AUTOFEEED_URL:-https://apexnewsindia.com/api/internal/autofeed?days=2&maxWork=4}"
 
 case "${1:-}" in
   "")
+    ;;
+  --backfill)
+    ENDPOINT="${ENDPOINT%%\?*}?since=2026-10-08&maxWork=2"
     ;;
   --retry-failed)
     ENDPOINT="${ENDPOINT%%\?*}?retryFailed=true"
@@ -28,7 +31,7 @@ case "${1:-}" in
     fi
     ;;
   *)
-    printf '%s\n' "Usage: $0 [--retry-failed | --retry-id STORY_ID [en|roman]]" >&2
+    printf '%s\n' "Usage: $0 [--backfill | --retry-failed | --retry-id STORY_ID [en|roman]]" >&2
     exit 2
     ;;
 esac
