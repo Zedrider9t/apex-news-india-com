@@ -19,7 +19,10 @@ export function getEditionContent(locale: Locale): EditionContent {
     })),
     categories: categoryMedia.map((media) => ({
       ...media,
-      ...copy.categories[media.name],
+      ...(copy.categories[media.name] ?? {
+        label: media.name,
+        subtitle: "",
+      }),
     })),
     shorts: shortMedia.map((media) => ({ ...media, ...copy.shorts[media.id] })),
     broadcastProgramme: copy.broadcastProgramme,
