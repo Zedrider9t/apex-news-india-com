@@ -208,6 +208,10 @@ export const roman: EditionCopy = {
       label: "Vigyan",
       subtitle: "Khoj aur research",
     },
+    Offbeat: {
+      label: "Idhar-Udhar",
+      subtitle: "Hatke khabrein",
+    },
     Opinion: {
       label: "Rai",
       subtitle: "Editorial nazariya",
