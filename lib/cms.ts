@@ -21,22 +21,62 @@ const categoryMap: Record<string, Category> = {
   bharat: "India",
   देश: "India",
   भारत: "India",
+  "uttar pradesh": "Uttar Pradesh",
+  "उत्तर प्रदेश": "Uttar Pradesh",
+  "uttar-pradesh": "Uttar Pradesh",
+  bihar: "Bihar",
+  बिहार: "Bihar",
+  "madhya pradesh": "Madhya Pradesh",
+  "मध्य प्रदेश": "Madhya Pradesh",
+  "madhya-pradesh": "Madhya Pradesh",
+  uttarakhand: "Uttarakhand",
+  उत्तराखंड: "Uttarakhand",
   politics: "Politics",
   राजनीति: "Politics",
   world: "World",
   दुनिया: "World",
+  विश्व: "World",
   business: "Business",
   कारोबार: "Business",
   व्यापार: "Business",
+  बिज़नेस: "Business",
+  बिजनेस: "Business",
   sports: "Sports",
+  sport: "Sports",
   खेल: "Sports",
   entertainment: "Entertainment",
   मनोरंजन: "Entertainment",
   technology: "Technology",
+  tech: "Technology",
+  तकनीक: "Technology",
   टेक्नोलॉजी: "Technology",
+  health: "Health",
+  स्वास्थ्य: "Health",
+  travel: "Travel",
+  ट्रैवेल: "Travel",
+  यात्रा: "Travel",
+  lifestyle: "Lifestyle",
+  लाइफस्टाइल: "Lifestyle",
+  science: "Science",
+  विज्ञान: "Science",
   northeast: "North East",
   "north east": "North East",
+  "north-east": "North East",
+  "नार्थ ईस्ट": "North East",
+  "नॉर्थ ईस्ट": "North East",
+  opinion: "Opinion",
+  editorial: "Opinion",
+  "संपादक की कलम से": "Opinion",
 };
+
+const breakingTerms = new Set([
+  "breaking",
+  "breaking news",
+  "breaking-news",
+  "ब्रेकिंग",
+  "ब्रेकिंग न्यूज़",
+  "ब्रेकिंग न्यूज",
+]);
 
 function normalizedText(value: string): string {
   return value
@@ -77,22 +117,44 @@ function suppressDuplicateLead(html: string, excerpt: string): string {
   );
 }
 
-function resolveCategory(record: StoryRecord, revision: LocalizedArticle): Category {
+function sourceCategoryValues(
+  record: StoryRecord,
+  revision: LocalizedArticle,
+): string[] {
   const source = record.sources.find(
     (item) => item.hash === revision.sourceRevisionHash,
   );
-  const candidates = [
-    ...revision.localizedCategoryLabels.map((item) => item.label),
+  return [
     ...(source?.story.categories.flatMap((item) => [
       item.name ?? "",
       item.slug ?? "",
     ]) ?? []),
-  ];
-  for (const candidate of candidates) {
-    const key = candidate.trim().toLowerCase();
+    ...revision.localizedCategoryLabels.map((item) => item.label),
+  ]
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+function resolveCategory(record: StoryRecord, revision: LocalizedArticle): Category {
+  for (const candidate of sourceCategoryValues(record, revision)) {
+    const key = candidate.toLowerCase();
+    if (breakingTerms.has(key)) continue;
     if (categoryMap[key]) return categoryMap[key];
   }
   return "India";
+}
+
+function resolveNewsTypes(
+  record: StoryRecord,
+  revision: LocalizedArticle,
+): import("./types").NewsType[] {
+  const values = sourceCategoryValues(record, revision).map((value) =>
+    value.toLowerCase(),
+  );
+  const types = new Set<import("./types").NewsType>(["standard"]);
+  if (values.some((value) => breakingTerms.has(value))) types.add("breaking");
+  if (values.some((value) => categoryMap[value] === "Opinion")) types.add("opinion");
+  return [...types];
 }
 
 function readyRevision(
@@ -160,6 +222,10 @@ function toArticle(
     featuredImage,
     imageAlt,
     category: resolveCategory(record, revision),
+    sourceCategories: source.categories
+      .map((item) => item.name ?? item.slug ?? "")
+      .filter(Boolean),
+    newsTypes: resolveNewsTypes(record, revision),
     tags: revision.localizedTagLabels.map((item) => item.label),
     publishedAt: source.publishedAt,
     readMinutes: Math.max(
@@ -227,20 +293,36 @@ export async function getHomepageArticles(
 ): Promise<ApexArticle[]> {
   const localized = await getReadyLocalizedArticles(locale);
 
-  // Once we have at least three ready approved stories, the newsroom can run
-  // its core article surfaces without demo headlines. Non-article preview
-  // modules (such as Shorts/Live placeholders) remain independently gated.
-  if (localized.length >= 3)
+  // Live homepage placement is derived from source taxonomy and recency.
+  // WordPress news type (for example Breaking) is retained separately from
+  // visual roles such as Hero, Latest and Trending.
+  if (localized.length >= 3) {
+    const breaking = localized.filter((article) =>
+      article.newsTypes?.includes("breaking"),
+    );
+    const heroIds = new Set(
+      [...breaking, ...localized]
+        .filter(
+          (article, index, list) =>
+            list.findIndex((candidate) => candidate.id === article.id) === index,
+        )
+        .slice(0, 3)
+        .map((article) => article.id),
+    );
+
     return localized.map((article, index) => ({
       ...article,
       editorial: {
         ...article.editorial,
-        heroRank: index === 0 ? 1 : undefined,
+        heroRank: heroIds.has(article.id)
+          ? [...heroIds].indexOf(article.id) + 1
+          : undefined,
         latestRank: index + 1,
-        trendingRank: index + 1,
-        special: index === 0,
+        trendingRank: index < 8 ? index + 1 : undefined,
+        special: article.newsTypes?.includes("opinion") || index === 0,
       },
     }));
+  }
 
   return getLatestArticles(locale);
 }
