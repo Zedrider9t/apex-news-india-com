@@ -209,6 +209,10 @@ export const en: EditionCopy = {
       label: "Science",
       subtitle: "Discovery and research",
     },
+    Offbeat: {
+      label: "Offbeat",
+      subtitle: "Stories beyond the usual",
+    },
     Opinion: {
       label: "Opinion",
       subtitle: "Editorial perspective",
