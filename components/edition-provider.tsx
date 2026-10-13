@@ -4,7 +4,7 @@ import type { Category, Locale } from "@/lib/types";
 import { getTranslator } from "@/lib/messages";
 const EditionContext = createContext<{
   locale: Locale;
-  categoryLabels: Record<Category, string>;
+  categoryLabels: Partial<Record<Category, string>>;
 } | null>(null);
 export function EditionProvider({
   locale,
@@ -12,7 +12,7 @@ export function EditionProvider({
   children,
 }: {
   locale: Locale;
-  categoryLabels: Record<Category, string>;
+  categoryLabels: Partial<Record<Category, string>>;
   children: React.ReactNode;
 }) {
   return (
@@ -28,6 +28,6 @@ export function useEdition() {
   return {
     ...edition,
     t: getTranslator(edition.locale),
-    categoryLabel: (id: Category) => edition.categoryLabels[id],
+    categoryLabel: (id: Category) => edition.categoryLabels[id] ?? id,
   };
 }
