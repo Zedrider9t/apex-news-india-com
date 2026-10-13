@@ -176,6 +176,42 @@ export const roman: EditionCopy = {
       label: "Technology",
       subtitle: "Kal ki duniya",
     },
+    "Uttar Pradesh": {
+      label: "Uttar Pradesh",
+      subtitle: "Rajya ki khabrein",
+    },
+    Bihar: {
+      label: "Bihar",
+      subtitle: "Rajya ki khabrein",
+    },
+    "Madhya Pradesh": {
+      label: "Madhya Pradesh",
+      subtitle: "Rajya ki khabrein",
+    },
+    Uttarakhand: {
+      label: "Uttarakhand",
+      subtitle: "Rajya ki khabrein",
+    },
+    Health: {
+      label: "Sehat",
+      subtitle: "Sehat aur wellbeing",
+    },
+    Travel: {
+      label: "Safar",
+      subtitle: "Jagahen aur yatra",
+    },
+    Lifestyle: {
+      label: "Lifestyle",
+      subtitle: "Zindagi aur culture",
+    },
+    Science: {
+      label: "Vigyan",
+      subtitle: "Khoj aur research",
+    },
+    Opinion: {
+      label: "Rai",
+      subtitle: "Editorial nazariya",
+    },
   },
   broadcastProgramme: {
     title: "Desh Ki Baat",
