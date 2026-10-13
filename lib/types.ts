@@ -1,12 +1,23 @@
 export type Category =
   | "India"
+  | "Uttar Pradesh"
+  | "Bihar"
+  | "Madhya Pradesh"
+  | "Uttarakhand"
   | "Politics"
   | "World"
   | "Business"
   | "Sports"
   | "Entertainment"
   | "Technology"
-  | "North East";
+  | "Health"
+  | "Travel"
+  | "Lifestyle"
+  | "Science"
+  | "North East"
+  | "Opinion";
+
+export type NewsType = "standard" | "breaking" | "opinion";
 export interface ApexArticle {
   locale: Locale;
   alternatePaths: Localized<string>;
@@ -19,6 +30,9 @@ export interface ApexArticle {
   featuredImage: string;
   imageAlt: string;
   category: Category;
+  /** Canonical WordPress taxonomy labels retained for placement/debugging. */
+  sourceCategories?: string[];
+  newsTypes?: NewsType[];
   tags?: string[];
   publishedAt: string;
   readMinutes: number;
@@ -78,7 +92,7 @@ export type CategoryMedia = Pick<NewsCategory, "name" | "image">;
 export interface EditionCopy {
   articles: Record<number, ArticleCopy>;
   shorts: Record<string, ShortCopy>;
-  categories: Record<Category, { label: string; subtitle: string }>;
+  categories: Partial<Record<Category, { label: string; subtitle: string }>>;
   broadcastProgramme: BroadcastProgramme;
 }
 export interface EditionContent {
