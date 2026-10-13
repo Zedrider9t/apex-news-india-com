@@ -742,23 +742,19 @@ export function Newsroom({
             </p>
           </div>
           <div className="app-actions">
-            <button
-              onClick={() =>
-                openInfo(
-                  t("Apex app — coming soon"),
-                  t(
-                    "Apex ka mobile app taiyaar ho raha hai. App Store aur Google Play ke download links launch ke baad yahan milenge. Tab tak mobile browser mein poora Apex experience dekhiye.",
-                  ),
-                )
-              }
+            <a
+              href="https://play.google.com/store/apps/details?id=com.apexnewsindia.app&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t("Download Apex News India on Google Play")}
             >
               <Smartphone size={21} />
               <span>
-                <small>{t("COMING SOON ON")}</small>
-                {t("iOS & Android")}{" "}
+                <small>{t("GET IT ON")}</small>
+                {t("Google Play")}{" "}
               </span>
               <ArrowUpRight size={16} />
-            </button>
+            </a>
             <span>{t("No noise. Just news that matters.")}</span>
           </div>
         </section>
