@@ -124,6 +124,7 @@ export function Newsroom({
     "Travel",
     "Lifestyle",
     "Science",
+    "Offbeat",
     "North East",
     "Opinion",
   ];
