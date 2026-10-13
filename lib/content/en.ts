@@ -177,6 +177,42 @@ export const en: EditionCopy = {
       label: "Technology",
       subtitle: "The world of tomorrow",
     },
+    "Uttar Pradesh": {
+      label: "Uttar Pradesh",
+      subtitle: "News from the state",
+    },
+    Bihar: {
+      label: "Bihar",
+      subtitle: "News from the state",
+    },
+    "Madhya Pradesh": {
+      label: "Madhya Pradesh",
+      subtitle: "News from the state",
+    },
+    Uttarakhand: {
+      label: "Uttarakhand",
+      subtitle: "News from the state",
+    },
+    Health: {
+      label: "Health",
+      subtitle: "Health and wellbeing",
+    },
+    Travel: {
+      label: "Travel",
+      subtitle: "Places and journeys",
+    },
+    Lifestyle: {
+      label: "Lifestyle",
+      subtitle: "Life and culture",
+    },
+    Science: {
+      label: "Science",
+      subtitle: "Discovery and research",
+    },
+    Opinion: {
+      label: "Opinion",
+      subtitle: "Editorial perspective",
+    },
   },
   broadcastProgramme: {
     title: "The National Brief",
