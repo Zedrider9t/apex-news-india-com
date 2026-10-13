@@ -783,7 +783,13 @@ export function Newsroom({
           </aside>
         </section>
         <section className="app-promo reveal">
-          <div className="app-monogram">
+          <a
+            className="app-monogram"
+            href="https://play.google.com/store/apps/details?id=com.apexnewsindia.app&hl=en_IN"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t("Download Apex News India on Google Play")}
+          >
             <Image
               src="/apex-logo.png"
               alt={t("Apex app icon")}
@@ -793,7 +799,7 @@ export function Newsroom({
             <span className="app-notification">
               <Bell size={13} fill="currentColor" />
             </span>
-          </div>
+          </a>
           <div>
             <span className="eyebrow">{t("YOUR WORLD. IN YOUR POCKET.")}</span>
             <h2>{t("Khabar saath rakhiye.")}</h2>
