@@ -782,14 +782,14 @@ export function Newsroom({
             </span>
           </aside>
         </section>
-        <section className="app-promo reveal">
-          <a
-            className="app-monogram"
-            href="https://play.google.com/store/apps/details?id=com.apexnewsindia.app&hl=en_IN"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={t("Download Apex News India on Google Play")}
-          >
+        <a
+          className="app-promo reveal"
+          href="https://play.google.com/store/apps/details?id=com.apexnewsindia.app&hl=en_IN"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t("Download Apex News India on Google Play")}
+        >
+          <div className="app-monogram">
             <Image
               src="/apex-logo.png"
               alt={t("Apex app icon")}
@@ -799,7 +799,7 @@ export function Newsroom({
             <span className="app-notification">
               <Bell size={13} fill="currentColor" />
             </span>
-          </a>
+          </div>
           <div>
             <span className="eyebrow">{t("YOUR WORLD. IN YOUR POCKET.")}</span>
             <h2>{t("Khabar saath rakhiye.")}</h2>
@@ -810,22 +810,17 @@ export function Newsroom({
             </p>
           </div>
           <div className="app-actions">
-            <a
-              href="https://play.google.com/store/apps/details?id=com.apexnewsindia.app&hl=en_IN"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={t("Download Apex News India on Google Play")}
-            >
+            <div className="app-store-link">
               <Smartphone size={21} />
               <span>
                 <small>{t("GET IT ON")}</small>
                 {t("Google Play")}{" "}
               </span>
               <ArrowUpRight size={16} />
-            </a>
+            </div>
             <span>{t("No noise. Just news that matters.")}</span>
           </div>
-        </section>
+        </a>
       </main>
       <footer id="footer" className="footer">
         <div className="shell">
