@@ -16,7 +16,7 @@ export default async function EditionLayout({
       id,
       value.label,
     ]),
-  ) as Record<import("@/lib/types").Category, string>;
+  ) as Partial<Record<import("@/lib/types").Category, string>>;
   return (
     <EditionProvider locale={locale} categoryLabels={categoryLabels}>
       {children}
