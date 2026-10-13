@@ -14,6 +14,7 @@ export type Category =
   | "Travel"
   | "Lifestyle"
   | "Science"
+  | "Offbeat"
   | "North East"
   | "Opinion";
 
