@@ -104,6 +104,35 @@ export function Newsroom({
       .toLowerCase()
       .includes(query.trim().toLowerCase()),
   );
+  const breakingArticles = articles.filter((article) =>
+    article.newsTypes?.includes("breaking"),
+  );
+  const tickerArticles = (breakingArticles.length ? breakingArticles : articles).slice(0, 6);
+  const homepageSectionOrder: Category[] = [
+    "India",
+    "Uttar Pradesh",
+    "Bihar",
+    "Madhya Pradesh",
+    "Uttarakhand",
+    "Politics",
+    "World",
+    "Business",
+    "Sports",
+    "Entertainment",
+    "Technology",
+    "Health",
+    "Travel",
+    "Lifestyle",
+    "Science",
+    "North East",
+    "Opinion",
+  ];
+  const populatedHomepageSections = homepageSectionOrder
+    .map((category) => ({
+      category,
+      stories: articles.filter((article) => article.category === category).slice(0, 4),
+    }))
+    .filter((section) => section.stories.length > 0);
 
   useEffect(() => {
     const onScroll = () => setCompact(window.scrollY > 65);
@@ -355,7 +384,7 @@ export function Newsroom({
                   key={copy}
                   aria-hidden={copy === 1 ? true : undefined}
                 >
-                  {articles.slice(1, 4).map((article) => (
+                  {tickerArticles.map((article) => (
                     <Link
                       tabIndex={copy === 1 ? -1 : undefined}
                       key={article.id}
@@ -528,6 +557,38 @@ export function Newsroom({
             ))}
           </div>
         </section>
+        {liveEdition && populatedHomepageSections.length > 0 ? (
+          <div className="live-category-sections">
+            {populatedHomepageSections.map(({ category, stories }) => (
+              <section
+                className="section reveal live-category-section"
+                id={`section-${category.toLowerCase().replace(/\s+/g, "-")}`}
+                key={category}
+              >
+                <SectionHeading
+                  kicker={t("FROM THE APEX NEWSROOM")}
+                  title={categoryLabel(category)}
+                >
+                  <button
+                    className="text-link"
+                    onClick={() => chooseCategory(category)}
+                  >
+                    {t("View all")} <ArrowUpRight size={16} />
+                  </button>
+                </SectionHeading>
+                <div className={`latest-grid ${stories.length === 1 ? "single-result" : ""}`}>
+                  {stories.map((article, index) => (
+                    <ArticleCard
+                      article={article}
+                      featured={index === 0}
+                      key={article.id}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        ) : null}
         <section id="shorts" className="section shorts-section reveal">
           <SectionHeading
             kicker={t("LESS SCROLL. MORE STORY.")}
