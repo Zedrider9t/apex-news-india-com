@@ -29,6 +29,8 @@ const source = {
   "EXPLORE THE NEWSROOM": "EXPLORE THE NEWSROOM",
   "Aapka newsroom, har waqt. Yeh broadcast player ka preview hai. Live stream abhi connect nahi ki gayi hai. Studio ki tasveer AI-generated concept hai. Stream judne ke baad yahan live news aur programme details dikhenge.":
     "Aapka newsroom, har waqt. Yeh broadcast player ka preview hai. Live stream abhi connect nahi ki gayi hai. Studio ki tasveer AI-generated concept hai. Stream judne ke baad yahan live news aur programme details dikhenge.",
+  "Apex News India ka live broadcast. Stream autoplay muted mode mein shuru hota hai; awaaz ke liye player controls use karein.":
+    "Apex News India ka live broadcast. Stream autoplay muted mode mein shuru hota hai; awaaz ke liye player controls use karein.",
   "Newsroom taiyaar ho raha hai.": "Newsroom taiyaar ho raha hai.",
   "Nayi kahaniyan jald yahan milengi.": "Nayi kahaniyan jald yahan milengi.",
   "Seedha khabron par jaayein": "Seedha khabron par jaayein",
@@ -209,6 +211,7 @@ const source = {
   "Open broadcast": "Open broadcast",
   "Studio concept": "Studio concept",
   "Stream coming soon": "Stream coming soon",
+  "Live stream": "Live stream",
   "UP NEXT": "UP NEXT",
   "THE BIG PICTURE": "THE BIG PICTURE",
   "min read": "min read",
@@ -238,6 +241,8 @@ export const messages: Record<Locale, Messages> = {
         "This is an editorial preview of the Short. Video coming soon.",
       "Aapka newsroom, har waqt. Yeh broadcast player ka preview hai. Live stream abhi connect nahi ki gayi hai. Studio ki tasveer AI-generated concept hai. Stream judne ke baad yahan live news aur programme details dikhenge.":
         "Your newsroom, around the clock. This is a broadcast player preview; no live stream is connected. The studio image is an AI-generated concept. Live news and programme details will appear when a stream is available.",
+      "Apex News India ka live broadcast. Stream autoplay muted mode mein shuru hota hai; awaaz ke liye player controls use karein.":
+        "Watch Apex News India live. The stream starts muted automatically; use the player controls to turn on sound.",
       "Newsroom taiyaar ho raha hai.": "The newsroom is taking shape.",
       "Nayi kahaniyan jald yahan milengi.": "New stories will be here soon.",
       "Seedha khabron par jaayein": "Skip to the news",
