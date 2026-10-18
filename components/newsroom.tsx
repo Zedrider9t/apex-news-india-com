@@ -39,6 +39,8 @@ import { Hero } from "./hero";
 import { BroadcastPanel } from "./broadcast-panel";
 import { SectionHeading } from "./section-heading";
 import { InformationLinks } from "./information-links";
+import { LivePlayer } from "./live-player";
+import { APEX_LIVE_HLS_URL } from "@/lib/live";
 
 type Props = {
   articles: ApexArticle[];
@@ -190,8 +192,9 @@ export function Newsroom({
       kind: "live",
       title: "Apex Live",
       body: t(
-        "Aapka newsroom, har waqt. Yeh broadcast player ka preview hai. Live stream abhi connect nahi ki gayi hai. Studio ki tasveer AI-generated concept hai. Stream judne ke baad yahan live news aur programme details dikhenge.",
+        "Apex News India ka live broadcast. Stream autoplay muted mode mein shuru hota hai; awaaz ke liye player controls use karein.",
       ),
+      videoUrl: APEX_LIVE_HLS_URL,
       image: "/images/studio-concept.webp",
     });
   const openInfo = (title: string, body: string) =>
@@ -979,16 +982,20 @@ export function Newsroom({
           <X size={21} />
         </button>
         {modal?.videoUrl ? (
-          <video
-            className="modal-video"
-            controls
-            playsInline
-            poster={modal.image}
-            src={modal.videoUrl}
-          >
-            <track kind="captions" />{" "}
-            {t("Your browser does not support video playback.")}{" "}
-          </video>
+          modal.kind === "live" ? (
+            <LivePlayer src={modal.videoUrl} />
+          ) : (
+            <video
+              className="modal-video"
+              controls
+              playsInline
+              poster={modal.image}
+              src={modal.videoUrl}
+            >
+              <track kind="captions" />{" "}
+              {t("Your browser does not support video playback.")}{" "}
+            </video>
+          )
         ) : (
           modal?.image && (
             <div className="modal-image">
