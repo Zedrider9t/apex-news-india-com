@@ -38,8 +38,7 @@ export function BroadcastPanel({
         />
         <div className="broadcast-grid" />
         <span className="broadcast-live">
-          <span className="live-dot" /> {t("LIVE")}{" "}
-          <small>{programme.isPreview ? t("PREVIEW") : ""}</small>
+          <span className="live-dot" /> {t("LIVE")}
         </span>
         <span className="broadcast-quality">{t("HD / 16:9")}</span>
         <div className="broadcast-title">
@@ -94,7 +93,7 @@ export function BroadcastPanel({
           </button>
           <span>
             {" "}
-            {t("Studio concept")} <br /> {t("Stream coming soon")}{" "}
+            {t("Studio concept")} <br /> {t("Live stream")}{" "}
           </span>
         </div>
       </div>
