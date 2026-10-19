@@ -862,6 +862,40 @@ a svg {
   box-shadow: 0 10px 28px #0007;
   border: 1px solid #ffffff26;
 }
+.broadcast-live-player {
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  background: #07080a;
+}
+.broadcast-live-player .live-player,
+.broadcast-live-player .modal-video {
+  width: 100%;
+  height: 100%;
+}
+.broadcast-live-player .modal-video {
+  max-height: none;
+  object-fit: contain;
+}
+.broadcast-expand {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 5;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: #090a0dcc;
+  border: 1px solid #ffffff45;
+  backdrop-filter: blur(6px);
+}
+.broadcast-expand:hover {
+  background: var(--red);
+  border-color: var(--red);
+}
+
 .broadcast-screen > img {
   opacity: 0.25;
   filter: grayscale(1);
