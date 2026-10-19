@@ -197,6 +197,14 @@ export function Newsroom({
       videoUrl: APEX_LIVE_HLS_URL,
       image: "/images/studio-concept.webp",
     });
+  const goToLive = () => {
+    document.getElementById("live")?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    });
+  };
   const openInfo = (title: string, body: string) =>
     setModal({ title, body, kind: "info" });
   const chooseCategory = (category: Category | "All") => {
@@ -276,7 +284,7 @@ export function Newsroom({
             <span>{t("Kya dhoondh rahe hain?")}</span>
             <span className="search-key">↵</span>
           </button>
-          <button className="live-button" onClick={openLive}>
+          <button className="live-button" onClick={goToLive}>
             <span className="live-dot" /> {t("LIVE TV")}{" "}
             <ArrowUpRight size={16} />
           </button>
@@ -842,7 +850,7 @@ export function Newsroom({
               <strong>{t("The daily briefing")}</strong>
               <ArrowUpRight size={21} />
             </a>
-            <button onClick={openLive}>
+            <button onClick={goToLive}>
               <span>{t("02 / WATCH")}</span>
               <strong>
                 {" "}
@@ -885,7 +893,7 @@ export function Newsroom({
             </div>
             <div className="footer-links">
               <h3>{t("WATCH & EXPLORE")}</h3>
-              <button onClick={openLive}>
+              <button onClick={goToLive}>
                 {" "}
                 {t("Apex Live")} <span className="live-dot" />
               </button>
@@ -950,7 +958,7 @@ export function Newsroom({
           <Search size={19} />
           <span>{t("Search")}</span>
         </button>
-        <button className="mobile-live" onClick={openLive}>
+        <button className="mobile-live" onClick={goToLive}>
           <span>
             <Play size={20} fill="currentColor" />
           </span>
