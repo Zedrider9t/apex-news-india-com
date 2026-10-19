@@ -39,6 +39,8 @@ export default async function ArticlePage({
   if (!article) notFound();
   if (article.contentOrigin === "localized" && slug !== article.slug)
     permanentRedirect(article.alternatePaths[locale]);
+  const categoryLabel =
+    editionCopy[locale].categories[article.category]?.label ?? article.category;
   const related = (await getLatestArticles(locale))
     .filter((a) => a.id !== article.id)
     .slice(0, 3);
@@ -61,12 +63,12 @@ export default async function ArticlePage({
         <div className="reader-breadcrumb">
           <Link href={`/${locale}`}>{t("Home")}</Link>
           <span>/</span>
-          <span>{editionCopy[locale].categories[article.category].label}</span>
+          <span>{categoryLabel}</span>
           <span>/</span>
           <span>{article.contentOrigin === "localized" ? t("News") : t("Sample story")}</span>
         </div>
         <span className="eyebrow">
-          {editionCopy[locale].categories[article.category].label}{" "}
+          {categoryLabel}{" "}
           {t("/ THE APEX EDIT")}
         </span>
         <h1>{article.title}</h1>
