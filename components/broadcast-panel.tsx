@@ -1,8 +1,9 @@
 "use client";
 import { useEdition } from "./edition-provider";
-import Image from "next/image";
-import { ArrowUpRight, Play, Radio, Volume2, Clock3 } from "lucide-react";
+import { ArrowUpRight, Play, Radio, Clock3, Maximize2 } from "lucide-react";
 import type { BroadcastProgramme } from "@/lib/types";
+import { LivePlayer } from "./live-player";
+import { APEX_LIVE_HLS_URL } from "@/lib/live";
 export function BroadcastPanel({
   onOpen,
   programme,
@@ -25,38 +26,21 @@ export function BroadcastPanel({
           <i />
         </span>
       </div>
-      <button
-        className="broadcast-screen"
-        onClick={onOpen}
-        aria-label={t("Open Apex Live broadcast preview")}
-      >
-        <Image
-          src="/images/studio-concept.webp"
-          alt={t("AI-generated broadcast studio concept")}
-          fill
-          sizes="(max-width: 700px) 100vw, 50vw"
-        />
-        <div className="broadcast-grid" />
+      <div className="broadcast-screen broadcast-live-player">
+        <LivePlayer src={APEX_LIVE_HLS_URL} />
         <span className="broadcast-live">
           <span className="live-dot" /> {t("LIVE")}
         </span>
         <span className="broadcast-quality">{t("HD / 16:9")}</span>
-        <div className="broadcast-title">
-          <span>{t("THE NATION.")}</span>
-          <strong>
-            {" "}
-            {t("IN FOCUS")}
-            <span>.</span>
-          </strong>
-          <small>{t("FROM THE APEX NEWSROOM")}</small>
-        </div>
-        <span className="broadcast-play">
-          <Play size={26} fill="currentColor" />
-        </span>
-        <span className="broadcast-lower">
-          <b>{t("APEX")}</b> {t("HAR KHABAR. HAR NAZAR.")} <Volume2 size={14} />
-        </span>
-      </button>
+        <button
+          type="button"
+          className="broadcast-expand"
+          onClick={onOpen}
+          aria-label={t("Open Apex Live broadcast preview")}
+        >
+          <Maximize2 size={17} />
+        </button>
+      </div>
       <div className="broadcast-info">
         <div className="eyebrow">{t("YOUR FRONT ROW TO THE NEWS")}</div>
         <h2>
